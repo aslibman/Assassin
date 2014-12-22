@@ -43,8 +43,4 @@ def getInfoByID(n):
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
-    register("a","b","b","A")
-    register("t","h","h","T")
-    register("r","h","h","R")
-    register("u","h","h","U")
 
