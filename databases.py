@@ -14,7 +14,12 @@ def register(user,pword,pword2,name):
         return "The passwords entered do not match."
     if name == "":
         return "No name entered."
-    list = [{"user":user,"password":pword,"name":name}]
+    num = next(db.users.find({},{"password":False},sort=[("num",-1)]),None)
+    if num == None: #Sets an ID for newly created accounts
+        i = 1
+    else:
+        i = num["num"] + 1
+    list = [{"user":user,"password":pword,"name":name,"num":i}]
     db.users.insert(list)
     return "Successfully registered."
 
@@ -29,8 +34,11 @@ def login(user,pword):
         return "Incorrect password."
     return "Successfully logged in."
 
-def getinfo(user):
-    return next(db.users.find({"user":user},{'_id':False,'password':False}),None);
+def getInfoByUser(user):
+    return next(db.users.find({"user":user},{'password':False}),None);
+
+def getInfoByID(n):
+    return next(db.users.find({"num":n},{'password':False}),None);
 
 if __name__ == "__main__":
     print "Clearing the users database"
