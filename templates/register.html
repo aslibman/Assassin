@@ -3,10 +3,9 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for( 'static',filename='http://bootswatch.com/cyborg/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for( 'static',filename='css/bootstrap-theme.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-	<link rel="stylesheet" type="text/css" href="http://bootswatch.com/cyborg/bootstrap.min.css">
-    <title>Assassin</title>
+    <title>Account Manager</title>
   </head>
 
   <body>
@@ -14,30 +13,41 @@
       <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
           <form class="navbar-form navbar-right" method="POST">
-	         <input type="submit" name="b" class="btn btn-default" value="About">
-            <input type="submit" name="b" class="btn btn-default" value="Sign Up">
+      <input type="submit" name="b" class="btn btn-default" value="About">
+            <input type="submit" name="b" class="btn btn-default" value="Log In">
           </form>
         </div>
       </nav>
-      {% if alert %}
-        <div class="alert alert-danger" role="alert">
-          Username or password is incorrect
+      {% if account %}
+        <div class="alert alert-danger " role="alert">
+          Account already exists
         </div>
       {% endif %}
-      <div class="header">
-	       
-      </div>
+      {% if pword %}
+        <div class="alert alert-danger" role="alert">
+          Make sure your passwords match
+        </div>
+      {% endif %}
       <div class="jumbotron" style="max-width:730px;">
-        <h2>Log In</h2>
+  	       <h2>Sign Up</h2>
+
         <form role="form" class="form-horizontal" method="POST">
           <div class="form-group">
+            <p><input type="text" class="form-control" name="first_name" placeholder="First Name"></p>
+
+            <p><input type="text" class="form-control" name="last_name" placeholder="Last Name"></p>
+
         	   <p><input type="text" class="form-control" name="username" placeholder="Username"></p>
+
         	   <p><input type="password" class="form-control" name="password" placeholder="Password"></p>
-        	   <p><input type="submit" name="b" class="btn btn-default" value="Log In">
+
+        	   <p><input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password"></p>
+
+        	   <p><input type="submit" name="b" class="btn btn-default" value="Register">
+
   	         <input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
-          </div>
         </div>
-        </form>
+      </form>
     </div>
   </body>
 </html>
