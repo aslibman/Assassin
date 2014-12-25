@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-##from databases import register, login, getInfoByUser, getInfoByID
+from databases import register, login, getInfoByUser, getInfoByID
 
 app = Flask('__name__')
 
