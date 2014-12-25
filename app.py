@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
-from databases import register, login, getInfoByUser, getInfoByID
+##from databases import register, login, getInfoByUser, getInfoByID
 
-app = Flask(__name__)
+app = Flask('__name__')
 
 @app.route("/",methods = ["POST","GET"])
 @app.route ("/home", methods = ["POST" , "GET"])
@@ -19,11 +19,16 @@ def login():
         else:
             return render_template("login.html", message=l[1])
     return render_template("login.html")
+	
+@app.route ("/register", methods = ["POST" , "GET"])
+def register():
+	return render_template("register.html")
 
-@app.route ("/facerecog", methods = ["POST" , "GET"])
+@app.route("/about", methods = ["POST" , "GET"])
+def about():
+	return render_template("about.html")
 
-##Check sessions
-##route sign up button to register page
+##@app.route ("/facerecog", methods = ["POST" , "GET"])
 
 if __name__=="__main__":
     app.debug = True
