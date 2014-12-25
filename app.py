@@ -13,8 +13,8 @@ def login():
     if request.method == "POST":
         user = request.form["username"]
         pword = request.form["password"]
-        l = login(user,pword)[0]
-        if l:
+        l = login(user,pword)
+        if l[0]:
             return redirect(url_for("home"))
         else:
             return render_template("login.html", message=l[1])
