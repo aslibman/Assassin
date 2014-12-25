@@ -14,7 +14,7 @@ def login():
         user = request.form["username"]
         pword = request.form["password"]
         l = login(user,pword)[0]
-        if l[0]:
+        if l:
             return redirect(url_for("home"))
         else:
             return render_template("login.html", message=l[1])
