@@ -29,7 +29,6 @@
       </nav>
 	</h4>
 
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3">
@@ -37,16 +36,27 @@
 <ul class="nav nav-pills nav-stacked">
   <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
   <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-  <li role="presentation" class="Active"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
+  <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
   <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-  <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+  <li role="presentation" class="Active"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
 </ul>
 </div>
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>My target</h2>
-		<p>Name of target, map for geolocation stuff, place for photo upload. This is where most things will happen</p>
+		<h2>Profile Picture</h2>
+		<p>If picture, then show pic with option to change. If no pic, then alert saying that picture is needed to play</p>
+		<hr>
+		<h2>Change Password</h2>
+		<form role="form" class="form-horizontal" method="POST">
+			<div class="form-group">
+				<p><input type="text" class="form-control" name="entry" placeholder="Your Current Password"></p>
+				<p><input type="text" class="form-control" name="entry" placeholder="Your New Password"></p>
+				<p><input type="text" class="form-control" name="entry" placeholder="Confirm New Password"></p>
+				</p><input type="submit" name="b" class="btn btn-danger" value="Change">
+				<input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
+			</div>
+		<form>
 	</div>
 </div>	
         </div>

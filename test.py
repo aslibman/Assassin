@@ -30,6 +30,10 @@ def target():
 def search():
     return render_template("search.html")
 
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    return render_template("settings.html")
+
 if __name__=="__main__":
     app.debug=True
     app.run()
