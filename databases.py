@@ -1,4 +1,5 @@
 from pymongo import Connection
+import random
 
 conn = Connection()
 db = conn['login']
@@ -34,13 +35,28 @@ def login(user,pword):
         return (False,"Incorrect password.")
     return (True,"Successfully logged in.")
 
+def assignTargets():
+    n = [i["num"] for i in db.users.find({},{"password":False})]
+    random.shuffle(n)
+    for a in range(len(n)):
+        if a == len(n) - 1:
+            db.users.update({"num":n[a]},{"$set":{"target":n[0]}})
+        else:
+            db.users.update({"num":n[a]},{"$set":{"target":n[a+1]}})
+    
 def getInfoByUser(user):
-    return next(db.users.find({"user":user},{'password':False}),None);
+    return next(db.users.find({"user":user},{'password':False}),None)
 
 def getInfoByID(n):
-    return next(db.users.find({"num":n},{'password':False}),None);
+    return next(db.users.find({"num":n},{'password':False}),None)
 
+def getTarget(n):
+    t = getInfoByID(n)
+    if t != None and t["target"] != 0:
+        return getInfoByID(t["target"])
+    
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
+
 
