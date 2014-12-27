@@ -35,8 +35,8 @@
         <div class="col-lg-3">
             <div class="container-left" style="max-width:300px;">
 <ul class="nav nav-pills nav-stacked">
-  <li role="presentation" class="active"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-  <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+  <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+  <li role="presentation" class="Active"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
   <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
   <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
 </ul>
@@ -44,13 +44,11 @@
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>Your Game</h2>
-		<p>Game you are currently in, invitations to new games, status in your current game (if you are still alive, your current target's name)</p>
-		<hr>
+		<h2>{{ session['username'] }}'s Profile</h2>
+		<p>Profile Picture</p>
+		<p>Stats? Kills, Deaths, KDR, Games played, etc</p>
 	</div>
 </div>	
         </div>
     </div>
 </div>
-
-
