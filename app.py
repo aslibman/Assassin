@@ -1,12 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from databases import register, login, getInfoByUser, getInfoByID
 from pymongo import MongoClient
+from werkzeug import secure_filename
+import os
 
 c = MongoClient("localhost", 27017)
 db = c.userbase
 collection = db.usercollection
 
 app = Flask('__name__')
+
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @app.route("/",methods = ["POST","GET"])
 @app.route ("/home", methods = ["POST" , "GET"])
@@ -45,7 +54,23 @@ def registration():
 	else:
 		render_template("register.html")
 
-	
+@app.route('/index')
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+	file = request.files['file']
+	if file and allowed_file(file.filename):
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		return redirect(url_for('uploaded_file',
+                                filename=filename))
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 @app.route("/about", methods = ["POST" , "GET"])
 def about():
