@@ -21,9 +21,13 @@ def register(user,pword,pword2,name):
     else:
         i = num["num"] + 1
     list = [{"user":user,"password":pword,"name":name,"num":i}]
+    print list
     db.users.insert(list)
     return (True,"Successfully registered.")
-
+	
+	#def troll(user,pword,pword2,name):
+		#return (user, pword,pword2,name)
+	
 def login(user,pword):
     if user == "":
         return (False,"Please enter your username.")
