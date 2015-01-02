@@ -22,7 +22,6 @@
       var MY_MAPTYPE_ID = 'custom_style';
 
       function initialize() {
-
         var featureOpts = [
           { 
             stylers: [
@@ -49,22 +48,56 @@
         var mapOptions = { 
           zoom: 18, 
           center: stuy, 
-          mapTypeControlOptions: { mapTypeIds: [google.maps.MapTypeId.ROADMAP, MY_MAPTYPE_ID] },
+          mapTypeControlOptions: { mapTypeIds:[MY_MAPTYPE_ID] },
           mapTypeId: MY_MAPTYPE_ID
         };
-
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
         
-        var styledMapOptions = {
-          name: 'Custom Style'
-        };
-        
+        if(navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+              
+              var image = 'redBall.png';
+              var playerMarker = new google.maps.Marker(
+                {
+                  map: map,
+                  position: pos,
+                  //icon: image,
+                  title: 'Your Location'
+                }
+              );
+              map.setCenter(pos);
+            }, 
+            function() {
+              handleNoGeolocation(true);
+            }
+          );
+        } else {
+          handleNoGeolocation(false);
+        }
+        var styledMapOptions = { name:'Assassin View' };
         var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
-
         map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
+      }   
+
+      function handleNoGeolocation(errorFlag) {
+        if (errorFlag) {
+          var content = 'Error: The Geolocation service failed.';
+        } else {
+          var content = 'Error: Your browser doesn\'t support geolocation.';
+        }
+        var options = {
+          map: map,
+          position: stuy,
+          content: content
+        };
+        var infowindow = new google.maps.InfoWindow(options);
+        map.setCenter(options.position);
       }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+      google.maps.event.addDomListener(window, 'load', initialize);
+    
     </script>
     <!--End Map Script-->
   </head>
