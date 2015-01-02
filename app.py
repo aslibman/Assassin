@@ -17,11 +17,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-@app.route("/",methods = ["POST","GET"])
+
 @app.route ("/home", methods = ["POST" , "GET"])
 def home():
     return render_template("home.html")
 
+@app.route("/",methods = ["POST","GET"])
 @app.route ("/login", methods = ["POST" , "GET"])
 def login():
     if request.method == "POST":
