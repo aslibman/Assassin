@@ -1,54 +1,79 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 
 <html lang="en">
-
+  
   <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="http://bootswatch.com/cyborg/bootstrap.css">
     <title>Assassin</title>
-  </head>
+    <!--Map Stuff-->
+    <style>
+      #map-canvas {
+        height: 400px;
+        width: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script>
+      var map;
+      function initialize() {
+        var mapOptions = {
+          zoom: 8,
+          center: new google.maps.LatLng(-34.397, 150.644)
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+        mapOptions);
+      }
 
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <!--End Map Script-->
+  </head>
+  
   <body>
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
 	<div class="navbar-header">
-	<div class="navbar-brand">
-	
-	<img src="./static/icon.jpg" alt="Brand" height="27px" width="27px">
-	</div>
+	  <div class="navbar-brand">
+	    
+	    <img src="./static/icon.jpg" alt="Brand" height="27px" width="27px">
+	  </div>
 	</div>
 	<h4><span style="line-height:36px;">Assassin</span>
-	<span style="line-height:15px;">
-          <form class="navbar-form navbar-right" method="POST">
-	    <p class="navbar-text">Logged in as {{ session['username'] }}</p>
-            <input type="submit" name="b" class="btn btn-warning" value="Log Out">
-	    <input type="submit" name="b" class="btn btn-primary" value="Settings">
-          </form>
-	</span>
-        </div>
-      </nav>
-	</h4>
-
-
-<div class="container-fluid">
-    <div class="row">
+	  <span style="line-height:15px;">
+            <form class="navbar-form navbar-right" method="POST">
+	      <p class="navbar-text">Logged in as {{ session['username'] }}</p>
+              <input type="submit" name="b" class="btn btn-warning" value="Log Out">
+	      <input type="submit" name="b" class="btn btn-primary" value="Settings">
+            </form>
+	  </span>
+      </div>
+    </nav>
+    </h4>
+    
+    
+    <div class="container-fluid">
+      <div class="row">
         <div class="col-lg-3">
-            <div class="container-left" style="max-width:300px;">
-<ul class="nav nav-pills nav-stacked">
-  <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-  <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-  <li role="presentation" class="Active"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
-  <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-  <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-</ul>
-</div>
+          <div class="container-left" style="max-width:300px;">
+	    <ul class="nav nav-pills nav-stacked">
+	      <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+	      <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+	      <li role="presentation" class="Active"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
+	      <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+	      <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+	    </ul>
+	  </div>
         </div>
         <div class="col-lg-9">
-           <div class="jumbotron">
-		<h2>My target</h2>
-		<p>Name of target, map for geolocation stuff, place for photo upload. This is where most things will happen</p>
-	</div>
-</div>	
-        </div>
+          <div class="jumbotron">
+	    <h2>My target</h2>
+	    <div id="map-canvas"></div>
+	    <p>Name of target, map for geolocation stuff, place for photo upload. This is where most things will happen</p>
+	  </div>
+	</div>	
+      </div>
     </div>
 </div>
