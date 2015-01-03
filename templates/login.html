@@ -28,11 +28,7 @@
         </div>
       </nav>
 	</h4>
-      {% if alert %}
-        <div class="alert alert-danger" role="alert">
-          Username or password is incorrect
-        </div>
-      {% endif %}
+
       <div class="header">
 	       
       </div>
@@ -43,6 +39,7 @@
           <div class="form-group">
         	   <p><input type="text" class="form-control" name="username" placeholder="Username"></p>
         	   <p><input type="password" class="form-control" name="password" placeholder="Password"></p>
+               <p>{{message}}</p>
         	   <p><input type="submit" name="b" class="btn btn-danger" value="Log In">
   	         <input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
           </div>

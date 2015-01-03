@@ -24,7 +24,7 @@ def home():
 
 @app.route("/",methods = ["POST","GET"])
 @app.route ("/login", methods = ["POST" , "GET"])
-def login():
+def loginPage():
     if request.method == "POST":
         user = request.form["username"]
         pword = request.form["password"]
@@ -35,7 +35,7 @@ def login():
             return render_template("login.html", message=l[1])
     return render_template("login.html")
 	
-@app.route ("/register", methods = [ "GET"])
+@app.route ("/register", methods = ["GET"])
 def display_register():
 	return render_template("register.html")
 	
@@ -53,7 +53,7 @@ def registration():
 	if result == True:
 		return render_template("home.html")
 	else:
-		render_template("register.html")
+		render_template("register.html",message=message)
 
 @app.route('/index')
 def index():
