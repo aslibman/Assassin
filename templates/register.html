@@ -42,14 +42,14 @@
         	   <p><input type="password" class="form-control" name="password" placeholder="Password"></p>
 
         	   <p><input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password"></p>
-               
+               Profile <input type="file" name="f" class="btn btn-default" value="Profile Picture">
                {% if message is defined %}
                <div class="alert alert-danger " role="alert">
                    {{message}}
                </div>
                {% endif %}
-            
-        	   <p><input type="submit" name="b" class="btn btn-danger" value="Register">
+               <br>
+        	   <p><input type="submit" name="b" class="btn btn-danger" value="Register">               
 
   	         <input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
         </div>
