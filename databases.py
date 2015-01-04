@@ -4,7 +4,7 @@ import random
 conn = Connection()
 db = conn['login']
 
-def register(user,pword,pword2,name):
+def register(user,pword,pword2,name,img="null"):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:
@@ -20,15 +20,12 @@ def register(user,pword,pword2,name):
         i = 1
     else:
         i = num["num"] + 1
-    list = [{"user":user,"password":pword,"name":name,"num":i}]
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img}]
     print list
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
-	#def troll(user,pword,pword2,name):
-		#return (user, pword,pword2,name)
-	
-def login(user,pword):
+def authenticate(user,pword):
     if user == "":
         return (False,"Please enter your username.")
     if pword == "":
@@ -58,6 +55,9 @@ def getTarget(n):
     t = getInfoByID(n)
     if t != None and t["target"] != 0:
         return getInfoByID(t["target"])
+
+def kill(n):
+    db.users.update({"num":n},{"$set":{"target":-1}})
     
 if __name__ == "__main__":
     print "Clearing the users database"

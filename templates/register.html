@@ -28,16 +28,6 @@
         </div>
       </nav>
 	</h4>
-      {% if account %}
-        <div class="alert alert-danger " role="alert">
-          Account already exists
-        </div>
-      {% endif %}
-      {% if pword %}
-        <div class="alert alert-danger" role="alert">
-          Make sure your passwords match
-        </div>
-      {% endif %}
       <div class="jumbotron" style="max-width:730px;">
   	       <h2>Sign Up</h2>
 
@@ -52,7 +42,13 @@
         	   <p><input type="password" class="form-control" name="password" placeholder="Password"></p>
 
         	   <p><input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password"></p>
-
+               
+               {% if message is defined %}
+               <div class="alert alert-danger " role="alert">
+                   {{message}}
+               </div>
+               {% endif %}
+            
         	   <p><input type="submit" name="b" class="btn btn-danger" value="Register">
 
   	         <input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
