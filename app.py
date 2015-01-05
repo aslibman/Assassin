@@ -105,18 +105,22 @@ def about():
 ##@app.route ("/facerecog", methods = ["POST" , "GET"])
 
 @app.route('/profile', methods=['GET', 'POST'])
+@loginRequired
 def profile():
     return render_template("profile.html")
 
 @app.route('/target', methods=['GET', 'POST'])
+@loginRequired
 def target():
     return render_template("target.html")
 
 @app.route('/search', methods=['GET', 'POST'])
+@loginRequired
 def search():
     return render_template("search.html")
 
 @app.route('/settings', methods=['GET', 'POST'])
+@loginRequired
 def settings():
     return render_template("settings.html")
 
