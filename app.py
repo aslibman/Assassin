@@ -104,6 +104,22 @@ def about():
 
 ##@app.route ("/facerecog", methods = ["POST" , "GET"])
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    return render_template("profile.html")
+
+@app.route('/target', methods=['GET', 'POST'])
+def target():
+    return render_template("target.html")
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    return render_template("search.html")
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    return render_template("settings.html")
+
 if __name__=="__main__":
     app.debug = True
     app.secret_key = 'dfjahdjhbdjf,lnhmdfnm'
