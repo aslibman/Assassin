@@ -2,7 +2,7 @@ from pymongo import Connection
 import random
 
 conn = Connection()
-db = conn['login']
+db = conn['game']
 
 def register(user,pword,pword2,name,img="null"):
     if user == "":
@@ -56,11 +56,26 @@ def getTarget(n):
     if t != None and t["target"] != 0:
         return getInfoByID(t["target"])
 
-def kill(n):
-    db.users.update({"num":n},{"$set":{"target":-1}})
+#def kill(n):
+#    db.users.update({"num":n},{"$set":{"target":-1}})
+
+def createGame(name,description,private):
+    nums = [i["num"] for i in db.games.find({})]
+    nums.append(0)
+    n = max(nums)
+    game = [{"num":n+1,"name":name,"description":description,"private":private,"players":{}}]
+    db.games.insert(game)
+    return n + 1
+
+def getGame(n):
+    return db.games.find_one({"num":n})
+
+def joinGame(gameID, playerID):
+    gamePlayers = getGame(gameID)["players"]
+    gamePlayers[str(playerID)] = "0"
+    db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
     
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
-
-
+    db.games.drop()
