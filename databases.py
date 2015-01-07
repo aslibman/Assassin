@@ -20,8 +20,7 @@ def register(user,pword,pword2,name,img="null"):
         i = 1
     else:
         i = num["num"] + 1
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img}]
-    print list
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img,"games":[]}]
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -36,14 +35,14 @@ def authenticate(user,pword):
         return (False,"Incorrect password.")
     return (True,"Successfully logged in.")
 
-def assignTargets():
-    n = [i["num"] for i in db.users.find({},{"password":False})]
+def assignTargets(gameID):
+    game = getGame(gameID)["players"]
+    n = game.keys()
     random.shuffle(n)
-    for a in range(len(n)):
-        if a == len(n) - 1:
-            db.users.update({"num":n[a]},{"$set":{"target":n[0]}})
-        else:
-            db.users.update({"num":n[a]},{"$set":{"target":n[a+1]}})
+    for a in range(len(n) - 1):
+        game[n[a]] = int(n[a+1])
+    game[n[len(n)-1]] = int(n[0])
+    db.games.update({"num":gameID},{"$set":{"players":game,"started":True}})
     
 def getInfoByUser(user):
     return next(db.users.find({"user":user},{'password':False}),None)
@@ -56,14 +55,14 @@ def getTarget(n):
     if t != None and t["target"] != 0:
         return getInfoByID(t["target"])
 
-#def kill(n):
+#def kill(gameID,playerID):
 #    db.users.update({"num":n},{"$set":{"target":-1}})
 
-def createGame(name,description,private):
+def createGame(name,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
     nums.append(0)
     n = max(nums)
-    game = [{"num":n+1,"name":name,"description":description,"private":private,"players":{}}]
+    game = [{"num":n+1,"name":name,"description":description,"private":private,"players":{},"started":False}]
     db.games.insert(game)
     return n + 1
 
@@ -72,8 +71,11 @@ def getGame(n):
 
 def joinGame(gameID, playerID):
     gamePlayers = getGame(gameID)["players"]
-    gamePlayers[str(playerID)] = "0"
+    gamePlayers[str(playerID)] = 0
     db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
+    playerGames = getInfoByID(playerID)["games"]
+    playerGames.append(gameID)
+    db.users.update({"num":playerID},{"$set":{"games":playerGames}})
     
 if __name__ == "__main__":
     print "Clearing the users database"
