@@ -20,7 +20,7 @@ def register(user,pword,pword2,name,img="null"):
         i = 1
     else:
         i = num["num"] + 1
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img,"games":[]}]
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img,"game":0,"stats":{"kills":0,"deaths":0}}]
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -50,13 +50,28 @@ def getInfoByUser(user):
 def getInfoByID(n):
     return next(db.users.find({"num":n},{'password':False}),None)
 
-def getTarget(n):
-    t = getInfoByID(n)
-    if t != None and t["target"] != 0:
-        return getInfoByID(t["target"])
+def getTarget(playerID):
+    t = getInfoByID(playerID)["game"]
+    if t != 0 and getGame(t)["started"]:
+        return getInfoByID(getGame(t)["players"][str(playerID)])
+    else:
+        return None
 
-#def kill(gameID,playerID):
-#    db.users.update({"num":n},{"$set":{"target":-1}})
+def killTarget(playerID): #kills the target of player with given ID
+    playerStats = getInfoByID(playerID)["stats"]
+    playerStats["kills"] += 1
+    target = getTarget(playerID)
+    targetID = target["num"]
+    targetStats = target["stats"]
+    targetStats["deaths"] += 1
+    db.users.update({"num":playerID},{"$set":{"stats":playerStats}})
+    db.users.update({"num":targetID},{"$set":{"stats":targetStats}})
+    newTargetID = getTarget(targetID)["num"]
+    game = getInfoByID(playerID)["game"]
+    gamePlayers = getGame(game)["players"]
+    gamePlayers[str(playerID)] = newTargetID
+    gamePlayers[str(targetID)] = -1
+    db.games.update({"num":game},{"$set":{"players":gamePlayers}})
 
 def createGame(name,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
@@ -69,15 +84,24 @@ def createGame(name,description,private=False):
 def getGame(n):
     return db.games.find_one({"num":n})
 
-def joinGame(gameID, playerID):
+def joinGame(gameID,playerID):
     gamePlayers = getGame(gameID)["players"]
     gamePlayers[str(playerID)] = 0
     db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
-    playerGames = getInfoByID(playerID)["games"]
-    playerGames.append(gameID)
-    db.users.update({"num":playerID},{"$set":{"games":playerGames}})
+    db.users.update({"num":playerID},{"$set":{"game":gameID}})
     
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
     db.games.drop()
+    register("a",".",".",".")
+    register("b",".",".",".")
+    register("c",".",".",".")
+    createGame("test","test desc")
+    joinGame(1,1)
+    joinGame(1,2)
+    joinGame(1,3)
+    assignTargets(1)
+    print getTarget(1)
+    killTarget(1)
+    print getTarget(1)
