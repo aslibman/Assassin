@@ -4,7 +4,7 @@ import random
 conn = Connection()
 db = conn['game']
 
-def register(user,pword,pword2,name,img="null"):
+def register(user,pword,pword2,name,img):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:

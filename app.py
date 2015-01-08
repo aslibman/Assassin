@@ -9,6 +9,7 @@ app = Flask('__name__')
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
+defaultImg = "null.jpeg"
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -70,10 +71,13 @@ def registration():
 	password2 = request.form["password_confirm"]
         file = request.files["f"]
 	if file and allowed_file(file.filename):
-		fileExtension = file.filename.split(".")[-1]
-                fileSave = request.form["username"] + "." + fileExtension
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], fileSave))
-	result = register(user,password,password2,name,fileSave)
+            fileExtension = file.filename.split(".")[-1]
+            fileSave = request.form["username"] + "." + fileExtension
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], fileSave))
+        if file:
+            result = register(user,password,password2,name,fileSave)
+        else:
+            result = register(user,password,password2,name,defaultImg)
 	if result[0]:
             session["username"] = user
             return redirect(url_for("home"))
