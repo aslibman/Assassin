@@ -30,8 +30,7 @@
       <div class="jumbotron" style="max-width:730px;">
         <h2>Sign Up</h2>
 
-        <form role="form" action="upload" method="post"
-        enctype="multipart/form-data"  class="form-horizontal" method="POST">
+        <form role="form" enctype="multipart/form-data"  class="form-horizontal" method="POST">
           <div class="form-group">
             <p><input type="text" class="form-control" name="first_name" placeholder="First Name"></p>
 
@@ -44,9 +43,7 @@
    <p><input type="password" class="form-control" name="password_confirm" placeholder="Confirm Password"></p>
 
    Profile
-   <input type="file" name="file"><br /><br />
-
-   <input type="submit" value="Upload">
+   <input type="file" name="f" class="btn btn-default"><br>
 
    {% if message is defined %}
  <div class="alert alert-danger " role="alert">

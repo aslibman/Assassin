@@ -1,18 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from databases import register, authenticate, getInfoByUser, getInfoByID
-from pymongo import MongoClient
 from werkzeug import secure_filename
 from functools import wraps
 import os
 
-c = MongoClient("localhost", 27017)
-db = c.userbase
-collection = db.usercollection
-
 app = Flask('__name__')
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
+app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -72,7 +68,12 @@ def registration():
 	user = request.form["username"]
 	password = request.form["password"]
 	password2 = request.form["password_confirm"]
-	result = register(user,password,password2,name)
+        file = request.files["f"]
+	if file and allowed_file(file.filename):
+		fileExtension = file.filename.split(".")[-1]
+                fileSave = request.form["username"] + "." + fileExtension
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], fileSave))
+	result = register(user,password,password2,name,fileSave)
 	if result[0]:
             session["username"] = user
             return redirect(url_for("home"))
@@ -84,25 +85,9 @@ def registration():
 def index():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload():
-	file = request.files['file']
-	if file and allowed_file(file.filename):
-		filename = secure_filename(file.filename)
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		return redirect(url_for('uploaded_file',
-                                filename=filename))
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
-
 @app.route("/about", methods = ["POST" , "GET"])
 def about():
 	return render_template("about.html")
-
-##@app.route ("/facerecog", methods = ["POST" , "GET"])
 
 @app.route('/profile', methods=['GET', 'POST'])
 @loginRequired
