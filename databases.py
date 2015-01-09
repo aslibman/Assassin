@@ -4,7 +4,16 @@ import random
 conn = Connection()
 db = conn['game']
 
-def register(user,pword,pword2,name,img):
+upload_folder = "uploads/"
+allowedExtensions = ['png', 'jpg', 'jpeg', 'gif']
+maxPicSize = 4 * 1024 * 1024
+defaultImg = "null.jpeg"
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in allowedExtensions
+
+def register(user,pword,pword2,name,file):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:
@@ -20,7 +29,16 @@ def register(user,pword,pword2,name,img):
         i = 1
     else:
         i = num["num"] + 1
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":img,"game":0,"stats":{"kills":0,"deaths":0}}]
+    if file:
+        if not allowed_file(file.filename):
+            return (False,"File is of wrong type. (Jpg, Jpeg, Png, and Gif are supported)")
+        else:
+            fileExtension = file.filename.split(".")[-1]
+            fileSave = user + "." + fileExtension
+            file.save(os.path.join(upload_folder, fileSave))
+            list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]
+    else:
+        list = [{"user":user,"password":pword,"name":name,"num":i,"pic":defaultImg,"game":0,"stats":{"kills":0,"deaths":0}}]
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -73,6 +91,8 @@ def killTarget(playerID): #kills the target of player with given ID
     gamePlayers[str(targetID)] = -1
     db.games.update({"num":game},{"$set":{"players":gamePlayers}})
 
+#write leaveGame function
+    
 def createGame(name,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
     nums.append(0)
