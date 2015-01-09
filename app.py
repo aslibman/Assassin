@@ -6,15 +6,6 @@ import os
 
 app = Flask('__name__')
 
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
-app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
-defaultImg = "null.jpeg"
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-
 def loginRequired(func):
     @wraps(func)
     def inner(*args,**kwargs):
@@ -63,25 +54,18 @@ def registration():
         if request.form["b"] == "Log In":
             return redirect(url_for("login"))
         
-	first_name = request.form["first_name"]
-	last_name = request.form["last_name"]
-	name = first_name + " " + last_name
-	user = request.form["username"]
-	password = request.form["password"]
-	password2 = request.form["password_confirm"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        name = first_name + " " + last_name
+        user = request.form["username"]
+        password = request.form["password"]
+        password2 = request.form["password_confirm"]
         file = request.files["f"]
-	if file and allowed_file(file.filename):
-            fileExtension = file.filename.split(".")[-1]
-            fileSave = request.form["username"] + "." + fileExtension
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], fileSave))
-        if file:
-            result = register(user,password,password2,name,fileSave)
-        else:
-            result = register(user,password,password2,name,defaultImg)
-	if result[0]:
+        result = register(user,password,password2,name,file)
+        if result[0]:
             session["username"] = user
             return redirect(url_for("home"))
-	else:
+        else:
             return render_template("register.html",message=result[1])
     return render_template("register.html")
 
