@@ -46,8 +46,18 @@
         <div class="col-lg-9">
            <div class="jumbotron">
 		<h2>Your Game</h2>
-		<p>Game you are currently in, status in your current game (if you are still alive, your current target's name), option to create game if you are not in one</p>
+    <!-- if you are in a game -->
+    <p> Currently in (gameStuff name)'s game.</p>
+    <p> Your Target: (gameStuff target)</p>
+    <p> Description: (gamestuff description)</p>
+     <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
 		<hr>
+    <!-- else -->
+    <h2>Your Game</h2>
+    <p> You are not currently in a game. To join a game, enter the host's name into the search page.</p>
+    <hr>
+    <h2>Create Game</h2>
+    
 	</div>
 </div>	
         </div>
