@@ -13,7 +13,8 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in allowedExtensions
 
-def register(user,pword,pword2,name,file):
+### PLAYER FUNCTIONS
+def register(user,pword,pword2,name,file=False):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:
@@ -53,15 +54,6 @@ def authenticate(user,pword):
         return (False,"Incorrect password.")
     return (True,"Successfully logged in.")
 
-def assignTargets(gameID):
-    game = getGame(gameID)["players"]
-    n = game.keys()
-    random.shuffle(n)
-    for a in range(len(n) - 1):
-        game[n[a]] = int(n[a+1])
-    game[n[len(n)-1]] = int(n[0])
-    db.games.update({"num":gameID},{"$set":{"players":game,"started":True}})
-    
 def getInfoByUser(user):
     return next(db.users.find({"user":user},{'password':False}),None)
 
@@ -91,8 +83,25 @@ def killTarget(playerID): #kills the target of player with given ID
     gamePlayers[str(targetID)] = -1
     db.games.update({"num":game},{"$set":{"players":gamePlayers}})
 
-#write leaveGame function
-    
+def inGame(playerID):
+    return not getInfoByID(playerID)["game"] == 0
+
+def leaveGame(playerID):
+    player = getInfoByID(playerID)
+    game = getGame(player["game"])
+    playerList = game["players"]
+    if game["started"]:
+        leaverTarget = playerList.pop(str(playerID))
+        for p in playerList.keys():
+            if playerList[p] == playerID:
+                playerList[p] = leaverTarget
+    else:
+        playerList.pop(str(playerID))
+    db.games.update({"num":game["num"]},{"$set":{"players":playerList}})
+    db.users.update({"num":playerID},{"$set":{"game":0}})
+        
+
+### GAME FUNCTIONS
 def createGame(name,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
     nums.append(0)
@@ -109,8 +118,27 @@ def joinGame(gameID,playerID):
     gamePlayers[str(playerID)] = 0
     db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
     db.users.update({"num":playerID},{"$set":{"game":gameID}})
+
+def assignTargets(gameID):
+    game = getGame(gameID)["players"]
+    n = game.keys()
+    random.shuffle(n)
+    for a in range(len(n) - 1):
+        game[n[a]] = int(n[a+1])
+    game[n[len(n)-1]] = int(n[0])
+    db.games.update({"num":gameID},{"$set":{"players":game,"started":True}})
+    
     
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
     db.games.drop()
+    #register("A",".",".","a")
+    #register("B",".",".","a")
+    #register("C",".",".","a")
+    #register("D",".",".","a")
+    #createGame("Test","desc")
+    #joinGame(1,1)
+    #joinGame(1,2)
+    #joinGame(1,3)
+    #joinGame(1,4)
