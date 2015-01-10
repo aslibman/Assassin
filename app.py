@@ -2,7 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from databases import register, authenticate, getInfoByUser, getInfoByID
 from werkzeug import secure_filename
 from functools import wraps
+import json
 import os
+from urllib2 import Request, urlopen
+import base64
 
 app = Flask('__name__')
 
@@ -96,6 +99,60 @@ def search():
 @loginRequired
 def settings():
     return render_template("settings.html")
+
+
+@app.route('/recognition',methods=["GET","POST"])
+def recognition():
+    if request.method == "POST":
+        if request.form["b"] == "Enroll":
+            kairosapiENROLL("me.jpg")
+        if request.form["b"] == "Check":
+            #kairosapiCHECK()
+            kairosapiRECOGNIZE("me.jpg")
+    return render_template("recognition.html")
+
+def kairosapiENROLL(facepath):
+    with open(facepath,'rb') as img:
+        encoded_img = base64.b64encode(img.read())
+    values = """{
+    "image": "%s",
+    "subject_id": "METEST1",
+    "gallery_name": "METEST1",
+    "selector": "SETPOSE",
+    "symmetricFill": "true"
+    }"""% (encoded_img)
+    print values
+    
+
+    headers = {
+    'Content-Type': 'application/json',
+    'app_id': '8daad7aa',
+    'app_key': '25bc262122ca09efa504f747c7c8cf8b'
+    }
+    request = Request('https://api.kairos.com/enroll', data=values, headers=headers)
+
+    response_body = urlopen(request).read()
+    print response_body
+
+def kairosapiRECOGNIZE(facepath):
+    with open(facepath,'rb') as img:
+        encoded_img = base64.b64encode(img.read())
+    values = """
+    {
+    "image": "%s",
+    "gallery_name": "METEST1"
+    }
+    """%(encoded_img)
+
+    headers = {
+    'Content-Type': 'application/json',
+    'app_id': '8daad7aa',
+    'app_key': '25bc262122ca09efa504f747c7c8cf8b'
+    }
+    request = Request('https://api.kairos.com/recognize', data=values, headers=headers)
+
+    response_body = urlopen(request).read()
+    print response_body
 
 if __name__=="__main__":
     app.debug = True
