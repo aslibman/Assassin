@@ -1,5 +1,6 @@
 from pymongo import Connection
 import random
+import os
 
 conn = Connection()
 db = conn['game']
