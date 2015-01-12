@@ -25,7 +25,19 @@ def home():
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
+        if request.form["b"] == "Settings":
+            return redirect(url_for("settings"))
+		#user = request.form["username"]
     return render_template("home.html")
+    #if request.method == "POST":
+     #   user = request.form["username"]
+      #  if request.form["b"] == "Log Out":
+       #     logout()
+        #    return redirect(url_for("login"))
+        ##if request.form["new"] == "New Game":
+          ##  getInfoByUser(user)
+    #return render_template("home.html")
+	
 
 @app.route("/",methods = ["POST","GET"])
 @app.route ("/login", methods = ["POST" , "GET"])
@@ -84,6 +96,8 @@ def profile():
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
+        if request.form["b"] == "Settings":
+            return redirect(url_for("settings"))
     return render_template("profile.html")
 
 @app.route('/target', methods=['GET', 'POST'])
@@ -93,6 +107,8 @@ def target():
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
+        if request.form["b"] == "Settings":
+            return redirect(url_for("settings"))
     return render_template("target.html")
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -102,6 +118,8 @@ def search():
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
+        if request.form["b"] == "Settings":
+            return redirect(url_for("settings"))
     return render_template("search.html")
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -111,7 +129,10 @@ def settings():
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
+        if request.form["b"] == "Settings":
+            return redirect(url_for("settings"))
     return render_template("settings.html")
+
 
 if __name__=="__main__":
     app.debug = True
