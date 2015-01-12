@@ -105,15 +105,16 @@ def settings():
 def recognition():
     if request.method == "POST":
         if request.form["b"] == "Enroll":
-            kairosapiENROLL("me.jpg")
+            kairosapiENROLL("photos/me.jpg")
         if request.form["b"] == "Check":
             #kairosapiCHECK()
-            kairosapiRECOGNIZE("me.jpg")
+            kairosapiRECOGNIZE("photos/Firefox_wallpaper.png")
     return render_template("recognition.html")
 
 def kairosapiENROLL(facepath):
     with open(facepath,'rb') as img:
-        encoded_img = base64.b64encode(img.read())
+        data=img.read()
+        encoded_img = data.encode("base64")
     values = """{
     "image": "%s",
     "subject_id": "METEST1",
@@ -136,7 +137,8 @@ def kairosapiENROLL(facepath):
 
 def kairosapiRECOGNIZE(facepath):
     with open(facepath,'rb') as img:
-        encoded_img = base64.b64encode(img.read())
+        data=img.read()
+        encoded_img = data.encode("base64")
     values = """
     {
     "image": "%s",
