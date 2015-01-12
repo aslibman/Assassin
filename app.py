@@ -80,21 +80,37 @@ def about():
 @app.route('/profile', methods=['GET', 'POST'])
 @loginRequired
 def profile():
+    if request.method == "POST":
+        if request.form["b"] == "Log Out":
+            logout()
+            return redirect(url_for("login"))
     return render_template("profile.html")
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
+    if request.method == "POST":
+        if request.form["b"] == "Log Out":
+            logout()
+            return redirect(url_for("login"))
     return render_template("target.html")
 
 @app.route('/search', methods=['GET', 'POST'])
 @loginRequired
 def search():
+    if request.method == "POST":
+        if request.form["b"] == "Log Out":
+            logout()
+            return redirect(url_for("login"))
     return render_template("search.html")
 
 @app.route('/settings', methods=['GET', 'POST'])
 @loginRequired
 def settings():
+    if request.method == "POST":
+        if request.form["b"] == "Log Out":
+            logout()
+            return redirect(url_for("login"))
     return render_template("settings.html")
 
 if __name__=="__main__":
