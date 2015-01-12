@@ -102,11 +102,13 @@ def leaveGame(playerID):
         
 
 ### GAME FUNCTIONS
-def createGame(name,description,private=False):
+def createGame(hostID,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
     nums.append(0)
     n = max(nums)
-    game = [{"num":n+1,"name":name,"description":description,"private":private,"players":{},"started":False}]
+    host = getInfoByID(hostID)
+    gameName = host["user"] + "'s game"
+    game = [{"num":n+1,"host":hostID,"name":gameName,"description":description,"private":private,"players":{},"started":False}]
     db.games.insert(game)
     return n + 1
 

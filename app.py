@@ -15,6 +15,15 @@ def loginRequired(func):
             return redirect(url_for("login",next=request.url))
     return inner
 
+def redirectIfLoggedIn(func):
+    @wraps(func)
+    def inner(*args,**kwargs):
+        if "username" in session:
+            return redirect(url_for("home"))
+        else:
+            return func(*args,**kwargs)
+    return inner
+
 def logout():
     session.pop("username",None)
 
@@ -41,6 +50,7 @@ def home():
 
 @app.route("/",methods = ["POST","GET"])
 @app.route ("/login", methods = ["POST" , "GET"])
+@redirectIfLoggedIn
 def login():
     if request.method == "POST":
         if request.form["b"] == "Sign Up":
@@ -61,6 +71,7 @@ def login():
     return render_template("login.html")	
 	
 @app.route ("/register", methods = ["GET", "POST"])
+@redirectIfLoggedIn
 def registration():
     if request.method == "POST":
         if request.form["b"] == "Log In":
