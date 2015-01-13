@@ -144,6 +144,16 @@ def settings():
             return redirect(url_for("settings"))
     return render_template("settings.html")
 
+@app.route('/recognition',methods=["GET","POST"])
+def recognition():
+    if request.method == "POST":
+        if request.form["b"] == "Enroll":
+            kairosapiENROLL("photos/me.jpg")
+        if request.form["b"] == "Check":
+            #kairosapiCHECK()
+            kairosapiRECOGNIZE("photos/Firefox_wallpaper.png")
+    return render_template("recognition.html")
+
 
 if __name__=="__main__":
     app.debug = True
