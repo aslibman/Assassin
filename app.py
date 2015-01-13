@@ -3,7 +3,7 @@ from databases import register, authenticate, getInfoByUser, getInfoByID
 from werkzeug import secure_filename
 from functools import wraps
 import os
-
+import faceapi
 app = Flask('__name__')
 
 def loginRequired(func):
