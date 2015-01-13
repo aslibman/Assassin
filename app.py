@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame
 from werkzeug import secure_filename
 from functools import wraps
 import os
@@ -30,6 +30,11 @@ def logout():
 @app.route ("/home", methods = ["POST" , "GET"])
 @loginRequired
 def home():
+    user = session["username"]
+    playerInfo = getInfoByUser(user)
+    ID = playerInfo["num"]
+    playerInGame = inGame(ID)
+    
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
@@ -37,7 +42,7 @@ def home():
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
 		#user = request.form["username"]
-    return render_template("home.html")
+    return render_template("home.html",playerInGame=playerInGame)
     #if request.method == "POST":
      #   user = request.form["username"]
       #  if request.form["b"] == "Log Out":
