@@ -148,7 +148,7 @@ def settings():
 def recognition():
     if request.method == "POST":
         if request.form["b"] == "Enroll":
-            kairosapiENROLL("photos/me.jpg")
+            kairosapiENROLL("photos/me.jpg","name")
         if request.form["b"] == "Check":
             #kairosapiCHECK()
             kairosapiRECOGNIZE("photos/Firefox_wallpaper.png")
