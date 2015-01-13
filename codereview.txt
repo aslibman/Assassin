@@ -1,0 +1,18 @@
+Reviewing: https://github.com/twangMRwang123/daVid.git
+Julian Kalogerakis, Victor Gaitour, David Dvorkin, Kyler Chase, Alex Libman
+
+Julian: The functionality of the project needs to be on track at this point in the timeline. The basic upkeep of user information and login/register system isn't running yet. Also unsure as to what the project does so far.
+
+Victor: There is no timeline. Also there are missing variables within app.py that prevent the functionality of register and login pages.
+
+David: App.py seems like it has good ideas, but none of the functions (login, register) actually work. It is hard to test if the program doesn't work. Consider working in branches and committing working functions at a time only.
+
+Alex: 
+database.py
+You guys should expand checkPassword(), as it just checks if you type anything in at the moment, which definitely is not enough for a password check.
+Same thing for usernames: you may want to consider running more checks on the names inputted (prevent spaces on edges for example)
+It's good that you encrypted the passwords stored.
+The code so far is very readable and modular, however you guys should definitely expand alot more.
+
+Kyler: Should add an authentication wrapper for the user pages for page protection. The database file should be expanded soon-- right now all it really does is deal with login.
+
