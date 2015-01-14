@@ -6,16 +6,16 @@ conn = Connection()
 db = conn['game']
 
 upload_folder = "uploads/"
-allowedExtensions = ['png', 'jpg', 'jpeg', 'gif']
+allowedExtensions = ['png', 'jpg']
 maxPicSize = 4 * 1024 * 1024
 defaultImg = "null.jpeg"
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1] in allowedExtensions
+        filename.rsplit('.', 1)[1].lower() in allowedExtensions
 
 ### PLAYER FUNCTIONS
-def register(user,pword,pword2,name,file=False):
+def register(user,pword,pword2,name,file):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:
@@ -31,16 +31,14 @@ def register(user,pword,pword2,name,file=False):
         i = 1
     else:
         i = num["num"] + 1
-    if file:
-        if not allowed_file(file.filename):
-            return (False,"File is of wrong type. (Jpg, Jpeg, Png, and Gif are supported)")
-        else:
-            fileExtension = file.filename.split(".")[-1]
-            fileSave = user + "." + fileExtension
-            file.save(os.path.join(upload_folder, fileSave))
-            list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]
-    else:
-        list = [{"user":user,"password":pword,"name":name,"num":i,"pic":defaultImg,"game":0,"stats":{"kills":0,"deaths":0}}]
+    if not file:
+        return (False,"No profile image selected.")
+    if not allowed_file(file.filename):
+        return (False,"File is of wrong type. (Jpg and Png are supported)")
+    fileExtension = file.filename.split(".")[-1]
+    fileSave = user + "." + fileExtension
+    file.save(os.path.join(upload_folder, fileSave))
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -111,6 +109,7 @@ def createGame(hostID,description,private=False):
     gameName = host["user"] + "'s game"
     game = [{"num":n+1,"host":hostID,"name":gameName,"description":description,"private":private,"players":{},"started":False}]
     db.games.insert(game)
+    joinGame(n+1,hostID)
     return n + 1
 
 def getGame(n):
