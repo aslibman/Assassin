@@ -114,7 +114,7 @@ def profile():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html")
+    return render_template("profile.html", user=session['username'])
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
@@ -136,7 +136,16 @@ def search():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
+        if request.form["b"] == "Search":
+            result = getInfoByUser(request.form["entry"])
+            print result
+            print result['user']
+            if result == None:
+                return render_template("search.html", message="Username does not exist")
+            else:
+                redirect(url_for("profile"))
     return render_template("search.html")
+        
 
 @app.route('/settings', methods=['GET', 'POST'])
 @loginRequired
@@ -147,6 +156,8 @@ def settings():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
+        if request.form["b"] == "Cancel":
+            return render_template("settings.html")
     return render_template("settings.html")
 
 @app.route('/recognition',methods=["GET","POST"])
