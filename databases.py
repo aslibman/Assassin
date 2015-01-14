@@ -12,7 +12,7 @@ defaultImg = "null.jpeg"
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lowercase() in allowedExtensions
+        filename.rsplit('.', 1)[1].lower() in allowedExtensions
 
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):
