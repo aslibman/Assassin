@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame
 from werkzeug import secure_filename
 from functools import wraps
 import os
@@ -41,16 +41,12 @@ def home():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-		#user = request.form["username"]
+        if request.form["b"] == "Create":
+            description = request.form["entry"]
+            match = createGame(ID, description)
+            return redirect(url_for("home"))
+       ## target = getTarget(ID)
     return render_template("home.html",playerInGame=playerInGame)
-    #if request.method == "POST":
-     #   user = request.form["username"]
-      #  if request.form["b"] == "Log Out":
-       #     logout()
-        #    return redirect(url_for("login"))
-        ##if request.form["new"] == "New Game":
-          ##  getInfoByUser(user)
-    #return render_template("home.html")
 	
 
 @app.route("/",methods = ["POST","GET"])
