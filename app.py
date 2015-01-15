@@ -33,11 +33,7 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
-	
-    pie = getGame(ID)["name"]
-	
-    test = getGame(ID)["description"]
-    ##game = getGame(0)
+    game = getGame(playerInfo["game"])
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -53,7 +49,7 @@ def home():
             leaveGame(ID)
             return redirect(url_for("home"))
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game)
 	
 
 @app.route("/",methods = ["POST","GET"])

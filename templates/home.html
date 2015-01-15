@@ -47,9 +47,9 @@
            <div class="jumbotron">
  <form role="form" class="form-horizontal" method="POST">
                {% if playerInGame %}<!-- if you are in a game -->
-               <p> Currently in {{ pie }}'s game.</p>
+               <p> Currently in {{ game["name"]}}.</p>
                <p> Your Target: (gameStuff target)<!--{% print target %}--></p>
-               <p> Description: (gamestuff {{test}} )</p>
+               <p> Description: {{game["description"]}}</p>
                <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
 			   </form>
 		       <hr>
