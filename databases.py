@@ -88,17 +88,19 @@ def inGame(playerID):
 def leaveGame(playerID):
     player = getInfoByID(playerID)
     game = getGame(player["game"])
-    playerList = game["players"]
-    if game["started"]:
-        leaverTarget = playerList.pop(str(playerID))
-        for p in playerList.keys():
-            if playerList[p] == playerID:
-                playerList[p] = leaverTarget
+    if game["host"] != playerID:
+        playerList = game["players"]
+        if game["started"]:
+            leaverTarget = playerList.pop(str(playerID))
+            for p in playerList.keys():
+                if playerList[p] == playerID:
+                    playerList[p] = leaverTarget
+        else:
+            playerList.pop(str(playerID))
+        db.games.update({"num":game["num"]},{"$set":{"players":playerList}})
+        db.users.update({"num":playerID},{"$set":{"game":0}})
     else:
-        playerList.pop(str(playerID))
-    db.games.update({"num":game["num"]},{"$set":{"players":playerList}})
-    db.users.update({"num":playerID},{"$set":{"game":0}})
-        
+        deleteGame(game["num"])
 
 ### GAME FUNCTIONS
 def createGame(hostID,description,private=False):
@@ -121,6 +123,12 @@ def joinGame(gameID,playerID):
     db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
     db.users.update({"num":playerID},{"$set":{"game":gameID}})
 
+def deleteGame(gameID):
+    game = getGame(gameID)
+    for player in game["players"].keys():
+        db.users.update({"num":int(player)},{"$set":{"game":0}})
+    db.games.remove({"num":gameID})
+        
 def assignTargets(gameID):
     game = getGame(gameID)["players"]
     n = game.keys()
