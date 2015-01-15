@@ -4,6 +4,7 @@ from functools import wraps
 import faceapi
 app = Flask('__name__')
 
+
 def loginRequired(func):
     @wraps(func)
     def inner(*args,**kwargs):
@@ -32,11 +33,7 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
-	
-    pie = getGame(ID)["name"]
-	
-    test = getGame(ID)["description"]
-    ##game = getGame(0)
+    game = getGame(playerInfo["game"])
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -52,7 +49,7 @@ def home():
             leaveGame(ID)
             return redirect(url_for("home"))
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -116,7 +113,7 @@ def profile():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html", user=session['username'])
+    return render_template("profile.html", name="jesus")
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
@@ -140,12 +137,10 @@ def search():
             return redirect(url_for("settings"))
         if request.form["b"] == "Search":
             result = getInfoByUser(request.form["entry"])
-            print result
-            print result['user']
             if result == None:
                 return render_template("search.html", message="Username does not exist")
             else:
-                redirect(url_for("profile"))
+                return render_template("profile.html", name=result["user"])
     return render_template("search.html")
         
 
