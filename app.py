@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets
 from werkzeug import secure_filename
 from functools import wraps
 import os
@@ -34,6 +34,11 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
+	
+    pie = getGame(ID)["name"]
+	
+    test = getGame(ID)["description"]
+    ##game = getGame(0)
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -41,16 +46,15 @@ def home():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-		#user = request.form["username"]
-    return render_template("home.html",playerInGame=playerInGame)
-    #if request.method == "POST":
-     #   user = request.form["username"]
-      #  if request.form["b"] == "Log Out":
-       #     logout()
-        #    return redirect(url_for("login"))
-        ##if request.form["new"] == "New Game":
-          ##  getInfoByUser(user)
-    #return render_template("home.html")
+        if request.form["b"] == "Create":
+            description = request.form["entry"]
+            match = createGame(ID, description)
+            return redirect(url_for("home"))
+        if request.form["b"] == "Leave Game":
+            leaveGame(ID)
+            return redirect(url_for("home"))
+       ## target = getTarget(ID)
+    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
 	
 
 @app.route("/",methods = ["POST","GET"])

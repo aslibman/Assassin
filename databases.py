@@ -111,7 +111,7 @@ def createGame(hostID,description,private=False):
     db.games.insert(game)
     joinGame(n+1,hostID)
     return n + 1
-
+	
 def getGame(n):
     return db.games.find_one({"num":n})
 
