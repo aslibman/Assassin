@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets
-from werkzeug import secure_filename
 from functools import wraps
-import os
 import faceapi
 app = Flask('__name__')
 
