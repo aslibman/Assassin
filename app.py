@@ -6,6 +6,7 @@ import os
 import faceapi
 app = Flask('__name__')
 
+
 def loginRequired(func):
     @wraps(func)
     def inner(*args,**kwargs):
@@ -118,7 +119,7 @@ def profile():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html", user=session['username'])
+    return render_template("profile.html", name="jesus")
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
@@ -142,12 +143,10 @@ def search():
             return redirect(url_for("settings"))
         if request.form["b"] == "Search":
             result = getInfoByUser(request.form["entry"])
-            print result
-            print result['user']
             if result == None:
                 return render_template("search.html", message="Username does not exist")
             else:
-                redirect(url_for("profile"))
+                return render_template("profile.html", name=result["user"])
     return render_template("search.html")
         
 
