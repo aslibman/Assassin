@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets
+from werkzeug import secure_filename
 from functools import wraps
+import os
 import faceapi
 app = Flask('__name__')
 
@@ -144,7 +146,7 @@ def search():
             if result == None:
                 return render_template("search.html", message="Username does not exist")
             else:
-                return render_template("profile.html", name=result["user"])
+                return render_template("profile.html", name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
     return render_template("search.html")
         
 
