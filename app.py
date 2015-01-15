@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets
 from werkzeug import secure_filename
 from functools import wraps
 import os
@@ -34,6 +34,11 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
+	
+    pie = getGame(ID)["name"]
+	
+    test = getGame(ID)["description"]
+    ##game = getGame(0)
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -45,8 +50,11 @@ def home():
             description = request.form["entry"]
             match = createGame(ID, description)
             return redirect(url_for("home"))
+        if request.form["b"] == "Leave Game":
+            leaveGame(ID)
+            return redirect(url_for("home"))
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame)
+    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
 	
 
 @app.route("/",methods = ["POST","GET"])
