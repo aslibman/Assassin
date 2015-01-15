@@ -112,7 +112,7 @@ def createGame(hostID,description,private=False):
     joinGame(n+1,hostID)
     return n + 1
 	
-def getGame(n):
+def getGame(gameID):
     return db.games.find_one({"num":n})
 
 def joinGame(gameID,playerID):
@@ -130,6 +130,9 @@ def assignTargets(gameID):
     game[n[len(n)-1]] = int(n[0])
     db.games.update({"num":gameID},{"$set":{"players":game,"started":True}})
     
+def countPlayers(gameID):
+    game = getGame(gameID)
+    return len(game["players"])
     
 if __name__ == "__main__":
     print "Clearing the users database"
