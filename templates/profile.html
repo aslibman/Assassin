@@ -50,6 +50,17 @@
         <div class="col-lg-9">
            <div class="jumbotron">
 		<h2>{{ result["user"] }}'s Profile</h2>
+		<h2>{{ name }}'s Profile</h2>
+		{% if inGame %}
+		<h3>Game</h3>
+		{% if name == host %}
+		<p>{{ name }} is currently hosting a game</p>
+		{% else %}
+		<p>{{ name }} is currently in {{ host }}'s game</p>
+		{% endif %}
+		<p>Description: {{ description }}</p>
+		<p><input type="submit" name="b" class="btn btn-primary" value="Join Game"></p>
+		{% endif %}
 		<p>Profile Picture</p>
 		<img src="./static/{{result["pic"]}}" height="70px" width="70px">
 		<h3>Stats</h3>
