@@ -14,7 +14,7 @@
 	<div class="navbar-header">
 	<div class="navbar-brand">
 	
-	<img src="./static/icon.jpg" alt="Brand" height="27px" width="27px">
+	<img src="/static/icon.jpg" alt="Brand" height="27px" width="27px">
 	</div>
 	</div>
 	<h4><span style="line-height:36px;">Assassin</span>
@@ -49,20 +49,22 @@
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>{{ result["user"] }}'s Profile</h2>
-		<h2>{{ name }}'s Profile</h2>
+		       <h2>{{ result["user"] }}'s Profile</h2>
+               <p>{{ result["name"] }}</p>
 		{% if inGame %}
 		<h3>Game</h3>
-		{% if name == host %}
-		<p>{{ name }} is currently hosting a game</p>
+		{% if result["user"] == host %}
+		<p>{{ result["user"] }} is currently hosting a game</p>
 		{% else %}
-		<p>{{ name }} is currently in {{ host }}'s game</p>
+		<p>{{ result["user"] }} is currently in {{ host }}'s game</p>
 		{% endif %}
 		<p>Description: {{ description }}</p>
+        {% if canJoinGame %}
 		<p><input type="submit" name="b" class="btn btn-primary" value="Join Game"></p>
+        {% endif %}
 		{% endif %}
 		<p>Profile Picture</p>
-		<img src="./static/{{result["pic"]}}" height="70px" width="70px">
+		<img src="/static/uploads/{{result['pic']}}" height="140px" width="140px">
 		<h3>Stats</h3>
 		<p>Kills: {{ result["stats"]["kills"] }}</p>
 		<p>Deaths: {{ result["stats"]["deaths"] }}</p>

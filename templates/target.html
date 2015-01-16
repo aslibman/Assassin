@@ -16,6 +16,7 @@
       }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.js"></script>
     <script>
       var map;
       var stuy = new google.maps.LatLng(40.718014, -74.013894);
@@ -57,7 +58,7 @@
           navigator.geolocation.getCurrentPosition(
             function(position) {
               var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-              
+              $.getJSON("/target",{latitude:pos.lat(), longitude:pos.lng()});
               var image = 'redBall.png';
               var playerMarker = new google.maps.Marker(
                 {
@@ -80,14 +81,6 @@
         var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
         map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
       }   
-      var result;
-      var params = function() {
-        var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        $.getJSON("/target",{latitude:pos.lat(), longitude:pos.lng()},function(d){
-          console.log(d);
-          result = d;
-        });
-      };
 
 
       function handleNoGeolocation(errorFlag) {

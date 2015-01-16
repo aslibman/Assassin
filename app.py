@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation
 from functools import wraps
 import faceapi
+import json
 app = Flask('__name__')
 
 def loginRequired(func):
@@ -104,29 +105,46 @@ def about():
 	return render_template("about.html")
 
 @app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile/', methods=['GET', 'POST'])
 @app.route('/profile/<username>', methods=['GET', 'POST'])
 @loginRequired
 def profile(username=None):
-    if username == None:
-        result = getInfoByUser(session['username'])
-    else:
-        result = getInfoByUser(username)
-        #if result == None:
-            #return render_template(error)
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html",result=result)
+        
+    if username == None:
+        result = getInfoByUser(session['username'])
+    else:
+        result = getInfoByUser(username)
+        if result == None:
+            return "No such user found" #needs template
+        
+    host = ""
+    description = ""
+    inGame = False
+    if result["game"] != 0:
+        inGame = True
+        game = getGame(result["game"])
+        host = getInfoByID(game["host"])["user"]
+        description = game["description"]
+    canJoinGame = getInfoByUser(session["username"])["game"] == 0
+    return render_template("profile.html",result=result,inGame=inGame,host=host,description=description,canJoinGame=canJoinGame)
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
-    lat = request.args.get("latitude");
-    lng = request.args.get("longitude");
-    print "lat: " + lat + ", " + "lng:" + lng;
+    player = getInfoByUser(session["username"])
+    ID = player["num"]
+    
+    lat = json.loads(json.dumps(request.args.get("latitude")))
+    lng = json.loads(json.dumps(request.args.get("longitude")))
+    if lat != None and lng != None:
+        updateLocation(ID,float(lat),float(lng))
+    
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()

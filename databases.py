@@ -5,7 +5,7 @@ import os
 conn = Connection()
 db = conn['game']
 
-upload_folder = "uploads/"
+upload_folder = "static/uploads/"
 allowedExtensions = ['png', 'jpg']
 maxPicSize = 4 * 1024 * 1024
 defaultImg = "null.jpeg"
@@ -38,7 +38,7 @@ def register(user,pword,pword2,name,file):
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0}}]        
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -106,6 +106,9 @@ def isHost(playerID):
     player = getInfoByID(playerID)
     game = player["game"]
     return game != 0 and game["host"] == playerID
+
+def updateLocation(playerID,lat,lng):
+    db.users.update({"num":playerID},{"$set":{"loc":{"lat":lat,"lng":lng}}})
     
 ### GAME FUNCTIONS
 def createGame(hostID,description,private=False):
