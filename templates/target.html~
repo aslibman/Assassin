@@ -80,15 +80,6 @@
         var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
         map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
       }   
-      var result;
-      var params = function() {
-        var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        $.getJSON("/target",{latitude:pos.lat(), longitude:pos.lng()},function(d){
-          console.log(d);
-          result = d;
-        });
-      };
-
 
       function handleNoGeolocation(errorFlag) {
         if (errorFlag) {

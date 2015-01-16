@@ -117,9 +117,6 @@ def profile():
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
-    lat = request.args.get("latitude");
-    lng = request.args.get("longitude");
-    print "lat: " + lat + ", " + "lng:" + lng;
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
