@@ -104,29 +104,19 @@ def about():
 	return render_template("about.html")
 
 @app.route('/profile', methods=['GET', 'POST'])
-@app.route('/profile/<username>', methods=['GET', 'POST'])
 @loginRequired
-def profile(username=None):
-    if username == None:
-        result = getInfoByUser(session['username'])
-    else:
-        result = getInfoByUser(username)
-        #if result == None:
-            #return render_template(error)
+def profile():
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html", name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
+    return render_template("profile.html", name="jesus")
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
-    lat = request.args.get("latitude");
-    lng = request.args.get("longitude");
-    print "lat: " + lat + ", " + "lng:" + lng;
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
