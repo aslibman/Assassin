@@ -38,7 +38,7 @@ def register(user,pword,pword2,name,file):
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]        
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
