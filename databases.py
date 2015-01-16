@@ -102,6 +102,11 @@ def leaveGame(playerID):
     else:
         deleteGame(game["num"])
 
+def isHost(playerID):
+    player = getInfoByID(playerID)
+    game = player["game"]
+    return game != 0 and game["host"] == playerID
+    
 ### GAME FUNCTIONS
 def createGame(hostID,description,private=False):
     nums = [i["num"] for i in db.games.find({})]

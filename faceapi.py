@@ -64,3 +64,21 @@ def kairosapiREMOVESUBJECT(id):
 
     response_body = urlopen(request).read()
     print response_body
+
+def kairosapiDETECT(facepath):
+    values= """
+    {
+    "image":%s,
+    "selector":"SETPOSE"
+    }
+    """%(facepath)
+    
+    headers = {
+    'Content-Type': 'application/json',
+    'app_id': '8daad7aa',
+    'app_key': '25bc262122ca09efa504f747c7c8cf8b'
+    }
+    request = Request('https://api.kairos.com/detect', data=values, headers=headers)
+
+    response_body = urlopen(request).read()
+    print response_body
