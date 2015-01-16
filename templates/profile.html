@@ -49,12 +49,13 @@
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>{{ name }}'s Profile</h2>
+		<h2>{{ result["user"] }}'s Profile</h2>
 		<p>Profile Picture</p>
+		<img src="./static/{{result["pic"]}}" height="70px" width="70px">
 		<h3>Stats</h3>
-		<p>Kills: {{ kills }}</p>
-		<p>Deaths: {{ deaths }}</p>
-		<p>Games Played: {{ games }}</p>
+		<p>Kills: {{ result["stats"]["kills"] }}</p>
+		<p>Deaths: {{ result["stats"]["deaths"] }}</p>
+		<p>Games Played: {{ result["stats"]["gamesPlayed"] }}</p>
 	</div>
 </div>	
         </div>

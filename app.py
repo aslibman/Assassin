@@ -119,7 +119,7 @@ def profile(username=None):
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html", name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
+    return render_template("profile.html",result=result)
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
