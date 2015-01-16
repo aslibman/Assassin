@@ -71,7 +71,7 @@ def kairosapiDETECT(facepath):
     "image":%s,
     "selector":"SETPOSE"
     }
-    """(%facepath)
+    """%(facepath)
     
     headers = {
     'Content-Type': 'application/json',
