@@ -35,7 +35,11 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
-    game = getGame(playerInfo["game"])
+	
+    pie = getGame(ID)["name"]
+	
+    test = getGame(ID)["description"]
+    ##game = getGame(0)
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -51,7 +55,7 @@ def home():
             leaveGame(ID)
             return redirect(url_for("home"))
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, game=game)
+    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -115,7 +119,8 @@ def profile():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("profile.html", name="jesus")
+    result = getInfoByUser(session['username'])
+    return render_template("profile.html",  name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
