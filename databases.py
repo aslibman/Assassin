@@ -38,7 +38,7 @@ def register(user,pword,pword2,name,file):
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]        
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
 	
@@ -102,6 +102,11 @@ def leaveGame(playerID):
     else:
         deleteGame(game["num"])
 
+def isHost(playerID):
+    player = getInfoByID(playerID)
+    game = player["game"]
+    return game != 0 and game["host"] == playerID
+    
 ### GAME FUNCTIONS
 def createGame(hostID,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
@@ -115,7 +120,7 @@ def createGame(hostID,description,private=False):
     return n + 1
 	
 def getGame(gameID):
-    return db.games.find_one({"num":n})
+    return db.games.find_one({"num":gameID})
 
 def joinGame(gameID,playerID):
     gamePlayers = getGame(gameID)["players"]
