@@ -32,11 +32,7 @@ def home():
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
-	
-    pie = getGame(ID)["name"]
-	
-    test = getGame(ID)["description"]
-    ##game = getGame(0)
+    game = getGame(playerInfo["game"])
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -52,7 +48,7 @@ def home():
             leaveGame(ID)
             return redirect(url_for("home"))
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, pie=pie, test=test)
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -108,16 +104,22 @@ def about():
 	return render_template("about.html")
 
 @app.route('/profile', methods=['GET', 'POST'])
+@app.route('/profile/<username>', methods=['GET', 'POST'])
 @loginRequired
-def profile():
+def profile(username=None):
+    if username == None:
+        result = getInfoByUser(session['username'])
+    else:
+        result = getInfoByUser(username)
+        #if result == None:
+            #return render_template(error)
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    result = getInfoByUser(session['username'])
-    return render_template("profile.html",  name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
+    return render_template("profile.html", name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['game'])
 
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
