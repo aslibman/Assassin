@@ -105,7 +105,7 @@ def leaveGame(playerID):
 def isHost(playerID):
     player = getInfoByID(playerID)
     game = player["game"]
-    return game != 0 and game["host"] == playerID
+    return game != 0 and getGame(game)["host"] == playerID
 
 def updateLocation(playerID,lat,lng):
     db.users.update({"num":playerID},{"$set":{"loc":{"lat":lat,"lng":lng}}})
