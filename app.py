@@ -151,7 +151,10 @@ def target():
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    return render_template("target.html")
+    targetJSON = getTarget(ID);
+    targetLat = targetJSON["loc"]["lat"];
+    targetLng = targetJSON["loc"]["lng"];
+    return render_template("target.html",targetLng=targetLng, targetLat=targetLat)
 
 @app.route('/search', methods=['GET', 'POST'])
 @loginRequired
