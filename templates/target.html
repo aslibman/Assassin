@@ -18,6 +18,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.js"></script>
     <script>
+      // Browser doesn't support Geolocation
+      var targetLat = {{targetLat}};
+      var targetLng = {{targetLng}};
       var map;
       var stuy = new google.maps.LatLng(40.718014, -74.013894);
       var MY_MAPTYPE_ID = 'custom_style';
@@ -58,6 +61,7 @@
           navigator.geolocation.getCurrentPosition(
             function(position) {
               var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+              var targetPos = new google.maps.LatLng(targetLat, targetLng);
               $.getJSON("/target",{latitude:pos.lat(), longitude:pos.lng()});
               var image = 'redBall.png';
               var playerMarker = new google.maps.Marker(
@@ -66,6 +70,14 @@
                   position: pos,
                   //icon: image,
                   title: 'Your Location'
+                }
+              );
+              var targetMarker = new google.maps.Marker(
+                {
+                  map: map,
+                  position: targetPos,
+                  //icon: image,
+                  title: "Your Target's Location"
                 }
               );
               map.setCenter(pos);
