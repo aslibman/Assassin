@@ -167,7 +167,7 @@ def search():
             if result == None:
                 return render_template("search.html", message="Username does not exist")
             else:
-                return render_template("profile.html", name=result["user"], kills=result['stats']['kills'], deaths=result['stats']['deaths'], games=result['stats']['gamesPlayed'])
+                return redirect(url_for("profile",username=result["user"]))
     return render_template("search.html")
         
 

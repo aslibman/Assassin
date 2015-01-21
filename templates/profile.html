@@ -37,9 +37,9 @@
 <ul class="nav nav-pills nav-stacked">
   <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 	{% if name == session['username'] %}
-  <li role="presentation" class="Active"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+  <li role="presentation" class="active"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
 	{% else %}
-  <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+  <li role="presentation" class="active"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
 	{% endif %}
   <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
   <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
