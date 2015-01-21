@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost
 from functools import wraps
 import faceapi
 import json
@@ -34,6 +34,7 @@ def home():
     ID = playerInfo["num"]
     playerInGame = inGame(ID)
     game = getGame(playerInfo["game"])
+    canStartGame = isHost(ID) and countPlayers(game["num"]) > 1 and not game["started"]
     #target = getTarget(ID) not working
     
     if request.method == "POST":
@@ -52,7 +53,7 @@ def home():
         if request.form["b"] == "Start":
 			assignTargets(playerInfo["game"])
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target)
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -112,6 +113,12 @@ def about():
 @app.route('/profile/<username>', methods=['GET', 'POST'])
 @loginRequired
 def profile(username=None):
+    if username == None:
+        result = getInfoByUser(session['username'])
+    else:
+        result = getInfoByUser(username)
+        if result == None:
+            return "No such user found" #needs template
     user = session["username"]
     playerInfo = getInfoByUser(user)
     ID = playerInfo["num"]
@@ -121,13 +128,10 @@ def profile(username=None):
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
+        if request.form["b"] == "Join Game":
+            joinGame(result["game"], ID)
+            return redirect(url_for("home"))
 			
-    if username == None:
-        result = getInfoByUser(session['username'])
-    else:
-        result = getInfoByUser(username)
-        if result == None:
-            return "No such user found" #needs template
         
     host = ""
     description = ""
@@ -137,9 +141,6 @@ def profile(username=None):
         game = getGame(result["game"])
         host = getInfoByID(game["host"])["user"]
         description = game["description"]
-    #if request.form["b"] == "Join Game": THE IF DOES NOT WORK. JOIN GAME WORKS.
-        joinGame(result["game"], ID)
-        #return redirect(url_for("home"))
     canJoinGame = getInfoByUser(session["username"])["game"] == 0
     return render_template("profile.html",result=result,inGame=inGame,host=host,description=description,canJoinGame=canJoinGame)
 

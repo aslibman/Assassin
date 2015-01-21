@@ -59,9 +59,12 @@
 		<p>{{ result["user"] }} is currently in {{ host }}'s game</p>
 		{% endif %}
 		<p>Description: {{ description }}</p>
-        {% if canJoinGame %}
-		<p><input type="submit" name="b" class="btn btn-primary" value="Join Game"></p>
-        {% endif %}
+
+		{% if canJoinGame %}
+		<form method="POST">
+		  <input type="submit" name="b" class="btn btn-primary" value="Join Game">
+		</form>
+		{% endif %}
 		{% endif %}
 		<p>Profile Picture</p>
 		<img src="/static/uploads/{{result['pic']}}" height="140px" width="140px">
