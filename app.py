@@ -35,7 +35,7 @@ def home():
     playerInGame = inGame(ID)
     game = getGame(playerInfo["game"])
     canStartGame = isHost(ID) and countPlayers(game["num"]) > 1 and not game["started"]
-    #target = getTarget(ID) not working
+    target = getTarget(ID)
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
@@ -149,6 +149,8 @@ def profile(username=None):
 def target():
     player = getInfoByUser(session["username"])
     ID = player["num"]
+    target = getTarget(ID)
+    
     
     lat = json.loads(json.dumps(request.args.get("latitude")))
     lng = json.loads(json.dumps(request.args.get("longitude")))
@@ -164,7 +166,7 @@ def target():
     targetJSON = getTarget(ID);
     targetLat = targetJSON["loc"]["lat"];
     targetLng = targetJSON["loc"]["lng"];
-    return render_template("target.html",targetLng=targetLng, targetLat=targetLat)
+    return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target)
 
 @app.route('/search', methods=['GET', 'POST'])
 @loginRequired
