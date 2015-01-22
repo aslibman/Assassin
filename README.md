@@ -1,6 +1,11 @@
 Assassin
 ========
-By David Dvorkin, Victor Gaitour, Kyler Chase, Julian Kalogerakis, Alex Libman  (Period 7 SoftDev)
+By David Dvorkin, Victor Gaitour, Kyler Chase, Julian Kalogerakis, Alex Libman  
+
+http://104.236.75.55
+^^^
+Click it to go to the site, DNS not yet set.
+
 ## Timeline
 ### 12/21/14
 * Basic account and login system
