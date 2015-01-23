@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget
 from functools import wraps
 import faceapi
 import json
@@ -149,24 +149,32 @@ def profile(username=None):
 def target():
     player = getInfoByUser(session["username"])
     ID = player["num"]
-    target = getTarget(ID)
-    
-    
+    game = player["game"]
+    gameStarted = False
+            
     lat = json.loads(json.dumps(request.args.get("latitude")))
     lng = json.loads(json.dumps(request.args.get("longitude")))
     if lat != None and lng != None:
         updateLocation(ID,float(lat),float(lng))
-    
+        
+    if game != 0 and getGame(game)["started"]:
+        gameStarted = True
+        target = getTarget(ID)
+        targetJSON = getTarget(ID);
+        targetLat = targetJSON["loc"]["lat"];
+        targetLng = targetJSON["loc"]["lng"];
+        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted)
+        
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-    targetJSON = getTarget(ID);
-    targetLat = targetJSON["loc"]["lat"];
-    targetLng = targetJSON["loc"]["lng"];
-    return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target)
+        if request.form["b"] == "Confirm":
+            if True:#victors garbage
+                killTarget(ID)
+    return render_template("target.html",gameStarted=gameStarted)
 
 @app.route('/search', methods=['GET', 'POST'])
 @loginRequired
