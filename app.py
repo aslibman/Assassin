@@ -4,6 +4,7 @@ from functools import wraps
 import faceapi
 import json
 app = Flask('__name__')
+app.config['SECRET_KEY'] = "change this"
 
 def loginRequired(func):
     @wraps(func)
@@ -212,5 +213,4 @@ def recognition():
 
 if __name__=="__main__":
     app.debug = True
-    app.secret_key = 'dfjahdjhbdjf,lnhmdfnm'
     app.run()
