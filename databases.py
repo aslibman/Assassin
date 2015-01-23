@@ -16,7 +16,7 @@ def allowed_file(filename):
 
 def uploadFile(file,name):
     if not file:
-        return (False,"No profile image selected.")
+        return (False,"No image selected.")
     if not allowed_file(file.filename):
         return (False,"File is of wrong type. (Jpg and Png are supported)")
     fileExtension = file.filename.split(".")[-1]
@@ -44,6 +44,8 @@ def register(user,pword,pword2,name,file):
     f = uploadFile(file,user)
     if not f[0]:
         return f
+    fileExtension = file.filename.split(".")[-1]
+    fileSave = user + "." + fileExtension
     list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
