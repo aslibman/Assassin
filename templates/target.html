@@ -160,7 +160,8 @@
 	    <h2>My target</h2>
 	    <div id="map-canvas"></div>
 	    {% if gameStarted %}
-	    <p>Name of target{{target["name"]}}<img src="/static/uploads/{{target['pic']}}" height="140px" width="140px">, map for geolocation stuff, place for photo upload. This is where most things will happen</p>
+	    <p>Target: {{target["name"]}}<img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
+        <input type="file" name="f" class="btn btn-default"><br>
 	    <input type="submit" name="b" class="btn btn-primary" value="Confirm">
 	    {% endif %}
 	  </div>
