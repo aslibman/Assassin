@@ -81,14 +81,20 @@ def killTarget(playerID): #kills the target of player with given ID
     targetID = target["num"]
     targetStats = target["stats"]
     targetStats["deaths"] += 1
-    db.users.update({"num":playerID},{"$set":{"stats":playerStats}})
-    db.users.update({"num":targetID},{"$set":{"stats":targetStats}})
+    targetStats["gamesPlayed"] += 1
     newTargetID = getTarget(targetID)["num"]
     game = getInfoByID(playerID)["game"]
-    gamePlayers = getGame(game)["players"]
-    gamePlayers[str(playerID)] = newTargetID
-    gamePlayers[str(targetID)] = -1
-    db.games.update({"num":game},{"$set":{"players":gamePlayers}})
+    if newTargetID == playerID:
+        playerStats["gamesPlayed"] += 1
+        playerStats["gamesWon"] += 1
+        deleteGame(game)
+    else:
+        gamePlayers = getGame(game)["players"]
+        gamePlayers[str(playerID)] = newTargetID
+        gamePlayers.pop(str(targetID))
+        db.games.update({"num":game},{"$set":{"players":gamePlayers}})
+    db.users.update({"num":playerID},{"$set":{"stats":playerStats}})
+    db.users.update({"num":targetID},{"$set":{"stats":targetStats,"game":0}})
 
 def inGame(playerID):
     return not getInfoByID(playerID)["game"] == 0
@@ -162,12 +168,3 @@ if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
     db.games.drop()
-    #register("A",".",".","a")
-    #register("B",".",".","a")
-    #register("C",".",".","a")
-    #register("D",".",".","a")
-    #createGame("Test","desc")
-    #joinGame(1,1)
-    #joinGame(1,2)
-    #joinGame(1,3)
-    #joinGame(1,4)

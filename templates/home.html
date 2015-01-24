@@ -45,19 +45,19 @@
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
- <form role="form" class="form-horizontal" method="POST">
+               <form role="form" class="form-horizontal" method="POST">
+                   <h2>Your Game</h2>
                {% if playerInGame %}<!-- if you are in a game -->
                <p> Currently in {{game["name"]}}.</p>
                <p> Your Target: {{target["name"]}}<!--{% print target %}--></p>
                <p> Description: {{game["description"]}}</p>
                <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
 {% if canStartGame %}
-			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"></p>
+			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> Player Count: {{len(game["players"].keys())}}</p>
 {% endif %}
 			   </form>
 		       <hr>
-               {% else %}<!-- else -->
-               <h2>Your Game</h2>
+               {% else %}
                <p> You are not currently in a game. To join a game, enter the host's name into the search page.</p>
                <hr>
                <h2>Create Game</h2>

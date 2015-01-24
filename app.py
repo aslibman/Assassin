@@ -173,7 +173,8 @@ def target():
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
         if request.form["b"] == "Confirm":
-            if True:#victors garbage
+            #grab img and compare using API (use uploadFile to upload if needed)
+            if True:#victors stuff
                 killTarget(ID)
     return render_template("target.html",gameStarted=gameStarted)
 
