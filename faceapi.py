@@ -26,7 +26,15 @@ def kairosapiENROLL(facepath,id):
 
     response_body = urlopen(request).read()
     d=json.loads(response_body)
-    print d
+    try:
+        if d['images'][0]['transaction']['status']=='success':
+            print True
+            return True
+        elif d['images'][0]['transation']['status']=='failure':
+            print False
+            return False
+    except:
+        return False
 
 def kairosapiRECOGNIZE(facepath):
     with open(facepath,'rb') as img:
@@ -47,27 +55,27 @@ def kairosapiRECOGNIZE(facepath):
     request = Request('https://api.kairos.com/recognize', data=values, headers=headers)
     response_body= urlopen(request).read()
     d=json.loads(response_body)
-    if d['images'][0]['transaction']['status']=='failure':
+    try:
+        if d['images'][0]['transaction']['status']=='failure':
+            return False
+        elif d['images'][0]['transaction']['status']=='success':
+            return d['images'][0]['candidates'][0].keys()[0]
+    except:
         return False
-    elif d['images'][0]['transaction']['status']=='success':
-        return True
 
 def kairosapiREMOVESUBJECT(id):
-    with open(facepath,'rb') as img:
-        data=img.read()
-        encoded_img = data.encode("base64")
     values= """
     {"gallery_name":"Assassin",
-    "subject_id":%s"
+    "subject_id":"%s"
     }
-    """%(encoded_img)
+    """%(id)
     
     headers = {
     'Content-Type': 'application/json',
     'app_id': '8daad7aa',
     'app_key': '25bc262122ca09efa504f747c7c8cf8b'
     }
-    request = Request('https://api.kairos.com/remove_subject', data=values, headers=headers)
+    request = Request('https://api.kairos.com/gallery/remove_subject', data=values, headers=headers)
 
     response_body = urlopen(request).read()
     d=json.loads(response_body)
@@ -102,3 +110,22 @@ def kairosapiDETECT(facepath):
             print False
             return False
     return False
+
+def kairosapiVIEW(galleryid):
+    values = """
+    {
+    "gallery_name":"%s"
+    }
+    """%(galleryid)
+
+    headers = {
+    'Content-Type': 'application/json',
+    'app_id': '8daad7aa',
+    'app_key': '25bc262122ca09efa504f747c7c8cf8b'
+    }
+    request = Request('https://api.kairos.com/gallery/view', data=values, headers=headers)
+
+    response_body = urlopen(request).read()
+    d=json.loads(response_body)
+    print d
+    

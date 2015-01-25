@@ -1,7 +1,7 @@
 from pymongo import Connection
 import random
 import os
-from faceapi import kairosapiDETECT
+from faceapi import kairosapiDETECT, kairosapiENROLL
 conn = Connection()
 db = conn['game']
 
@@ -50,6 +50,7 @@ def register(user,pword,pword2,name,file):
         return (False, "Please upload a picture with a face in it")
     list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
+    kairosapiENROLL(upload_folder+fileSave,user)
     return (True,"Successfully registered.")
 	
 def authenticate(user,pword):

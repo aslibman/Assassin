@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget
 from functools import wraps
-from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT
+from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW
 import json
 app = Flask('__name__')
 app.config['SECRET_KEY'] = "change this"
@@ -213,12 +213,16 @@ def settings():
 def recognition():
     if request.method == "POST":
         if request.form["b"] == "Enroll":
-            kairosapiENROLL("photos/me.jpg","name")
+            kairosapiENROLL("photos/Bleh.JPG","victorgaitour")
         if request.form["b"] == "Check":
             #kairosapiCHECK()
-            kairosapiRECOGNIZE("photos/Firefox_wallpaper.png")
+            kairosapiRECOGNIZE("photos/Bleh2.JPG")
         if request.form["b"] == "seeifface":
             kairosapiDETECT("photos/ball.jpg")
+        if request.form["b"] == "remove":
+            kairosapiREMOVESUBJECT("victorgaitour")
+        if request.form["b"] == "listall":
+            kairosapiVIEW("Assassin")
     return render_template("recognition.html")
 
 
