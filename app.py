@@ -176,6 +176,18 @@ def target():
             #grab img and compare using API (use uploadFile to upload if needed)
             if True:#victors stuff
                 killTarget(ID)
+            #victor's stuff
+            #if kairosapiDETECT(fileSave):
+            #    if kairosapiRECOGNIZE(fileSave)==ID:
+            #        killTarget(ID)
+            #    else:
+            #        message="Face Recognition failed. Sending a notification to your target."
+                    #possible notification in case face recog fails
+            #        return False
+            #else:
+            #    message= "No face in the photo detected. Try again."
+            #    return False
+        
     return render_template("target.html",gameStarted=gameStarted)
 
 @app.route('/search', methods=['GET', 'POST'])
