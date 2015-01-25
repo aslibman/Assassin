@@ -2,6 +2,7 @@ from pymongo import Connection
 import random
 import os
 from faceapi import kairosapiDETECT, kairosapiENROLL
+from PIL import Image
 conn = Connection()
 db = conn['game']
 
@@ -23,6 +24,11 @@ def uploadFile(file,name):
     fileSave = name + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
     return (True,"File successfully uploaded.",fileSave)
+
+def processImg(imgPath):
+    img = Image.open(imgPath)
+    img = Transpose().process(img)
+    img.save(imgPath)
 
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):

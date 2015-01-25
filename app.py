@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget, uploadFile
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget, uploadFile, processImg
 from functools import wraps
 from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW
 import json
@@ -173,6 +173,7 @@ def target():
             f = uploadFile(f,player["user"]+"TARGET")
             if f[0]:
                 path = "static/uploads/" + f[2]
+                processImg(path)
                 if kairosapiDETECT(path):
                     targetUser = getTarget(ID)["user"]
                     if targetUser in kairosapiRECOGNIZE(path):
