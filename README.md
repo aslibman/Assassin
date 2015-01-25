@@ -2,9 +2,21 @@ Assassin
 ========
 By David Dvorkin, Victor Gaitour, Kyler Chase, Julian Kalogerakis, Alex Libman  
 
-Apache: http://104.236.75.55
-Gunicorn: http://104.236.123.216 
+Gunicorn: http://104.236.123.216 <br>
+Apache: http://104.236.75.55 <br>
 (Seperate servers)
+
+## Installation
+1. Clone the repository: `git clone git@github.com:kingalex11235/Assassin.git`
+2. Install PIP: `sudo apt-get install python-pip`
+3. (Optional) Install and use virtualenv `sudo apt-get install python-virtualenv`
+4. Install MongoDB
+5. Install the flask module: `pip install flask`
+6. Install the pymongo module: `pip install pymongo`
+7. Configure your server to deploy app.py
+
+## What It Does
+<i>Placeholder</i>
 
 ## Timeline
 ### 12/21/14
