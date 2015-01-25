@@ -25,7 +25,8 @@ def kairosapiENROLL(facepath,id):
     request = Request('https://api.kairos.com/enroll', data=values, headers=headers)
 
     response_body = urlopen(request).read()
-    print response_body
+    d=json.loads(response_body)
+    print d
 
 def kairosapiRECOGNIZE(facepath):
     with open(facepath,'rb') as img:
@@ -44,16 +45,22 @@ def kairosapiRECOGNIZE(facepath):
     'app_key': '25bc262122ca09efa504f747c7c8cf8b'
     }
     request = Request('https://api.kairos.com/recognize', data=values, headers=headers)
-
-    response_body = urlopen(request).read()
-    print response_body
+    response_body= urlopen(request).read()
+    d=json.loads(response_body)
+    if d['images'][0]['transaction']['status']=='failure':
+        return False
+    elif d['images'][0]['transaction']['status']=='success':
+        return True
 
 def kairosapiREMOVESUBJECT(id):
+    with open(facepath,'rb') as img:
+        data=img.read()
+        encoded_img = data.encode("base64")
     values= """
     {"gallery_name":"Assassin",
     "subject_id":%s"
     }
-    """%(id)
+    """%(encoded_img)
     
     headers = {
     'Content-Type': 'application/json',
@@ -63,16 +70,20 @@ def kairosapiREMOVESUBJECT(id):
     request = Request('https://api.kairos.com/remove_subject', data=values, headers=headers)
 
     response_body = urlopen(request).read()
-    print response_body
+    d=json.loads(response_body)
+    print d
 
 def kairosapiDETECT(facepath):
-    values= """
+    with open(facepath,'rb') as img:
+        data=img.read()
+        encoded_img = data.encode("base64")
+    values = """
     {
-    "image":%s,
-    "selector":"SETPOSE"
+    "image": "%s",
+    "selector":"FACE"
     }
-    """%(facepath)
-    
+    """%(encoded_img)
+
     headers = {
     'Content-Type': 'application/json',
     'app_id': '8daad7aa',
@@ -81,4 +92,13 @@ def kairosapiDETECT(facepath):
     request = Request('https://api.kairos.com/detect', data=values, headers=headers)
 
     response_body = urlopen(request).read()
-    print response_body
+    d=json.loads(response_body)
+    try:
+        if d['images'][0]['status']=='Complete':
+            print True
+            return True
+    except:
+        if d['Errors'][0]['Message']=='no faces found in the image':
+            print False
+            return False
+    return False

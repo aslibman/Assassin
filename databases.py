@@ -1,7 +1,7 @@
 from pymongo import Connection
 import random
 import os
-
+from faceapi import kairosapiDETECT
 conn = Connection()
 db = conn['game']
 
@@ -46,6 +46,8 @@ def register(user,pword,pword2,name,file):
         return f
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
+    if kairosapiDETECT(upload_folder+fileSave)==False:
+        return (False, "Please upload a picture with a face in it")
     list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
     return (True,"Successfully registered.")
