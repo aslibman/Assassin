@@ -59,7 +59,15 @@ def kairosapiRECOGNIZE(facepath):
         if d['images'][0]['transaction']['status']=='failure':
             return False
         elif d['images'][0]['transaction']['status']=='success':
-            return d['images'][0]['candidates'][0].keys()[0]
+            d=d['images'][0]['candidates']
+            l=[]
+            for x in d:
+                for b in x:
+                    if b!="enrollment_timestamp":
+                        l.append(b)
+            print l
+            return l 
+            
     except:
         return False
 

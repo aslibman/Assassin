@@ -151,6 +151,7 @@ def profile(username=None):
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
+    message=""
     player = getInfoByUser(session["username"])
     ID = player["num"]
     game = player["game"]
@@ -194,7 +195,7 @@ def target():
         targetJSON = getTarget(ID);
         targetLat = targetJSON["loc"]["lat"];
         targetLng = targetJSON["loc"]["lng"];
-        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted)
+        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted, message=message)
     
     return render_template("target.html",gameStarted=gameStarted)
 
