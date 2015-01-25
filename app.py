@@ -174,7 +174,8 @@ def target():
             if f[0]:
                 path = "static/uploads/" + f[2]
                 if kairosapiDETECT(path):
-                    if kairosapiRECOGNIZE(path)==ID:
+                    targetUser = getTarget(ID)["user"]
+                    if targetUser in kairosapiRECOGNIZE(path):
                         #print "KILLED"
                         killTarget(ID)
                         return redirect(url_for("home"))
