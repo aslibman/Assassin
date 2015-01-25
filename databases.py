@@ -23,6 +23,8 @@ def uploadFile(file,name):
     fileExtension = file.filename.split(".")[-1]
     fileSave = name + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
+    if kairosapiDETECT(upload_folder+fileSave)==False:
+        return (False, "Please upload a picture with a face in it.")
     return (True,"File successfully uploaded.",fileSave)
 
 def processImg(imgPath):
@@ -46,6 +48,9 @@ def register(user,pword,pword2,name,file):
         return (False,"No password entered in one or more of the fields.")
     if pword != pword2:
         return (False,"The passwords entered do not match.")
+    v = validPassword(pword)
+    if not v[0]:
+        return v[1]    
     if name == "":
         return (False,"No name entered.")
     num = next(db.users.find({},{"password":False},sort=[("num",-1)]),None)
@@ -58,13 +63,31 @@ def register(user,pword,pword2,name,file):
         return f
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
-    if kairosapiDETECT(upload_folder+fileSave)==False:
-        return (False, "Please upload a picture with a face in it")
     list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
     kairosapiENROLL(upload_folder+fileSave,user)
     return (True,"Successfully registered.")
-	
+
+def changeProfile(user,path):
+    db.users.update({"user":user},{"$set":{"pic":path}})
+    
+def validPassword(pword):
+    if len(pword) == 0:
+        return (False,"Password cannot be blank.")
+    return (True,"Password valid.")
+    
+def changePassword(user,current,pword1,pword2):
+    r = authenticate(user,current)
+    if not r[0]:
+        return r
+    if pword1 != pword2:
+        return (False,"The new passwords entered do not match.")
+    v = validPassword(pword1)
+    if not v[0]:
+        return v
+    db.users.update({"user":user},{"$set":{"password":pword1}})
+    return (True,"Password changed successfully.")
+    
 def authenticate(user,pword):
     if user == "":
         return (False,"Please enter your username.")

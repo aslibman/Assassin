@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget, uploadFile, processImg
+from databases import *
 from functools import wraps
 from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW
 import json
@@ -221,6 +221,7 @@ def search():
 @app.route('/settings', methods=['GET', 'POST'])
 @loginRequired
 def settings():
+    user = session["username"]
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
@@ -229,6 +230,20 @@ def settings():
             return redirect(url_for("settings"))
         if request.form["b"] == "Cancel":
             return render_template("settings.html")
+        if request.form["b"] == "Change Profile":
+            f = request.files["f"]
+            upload = uploadFile(f,user)
+            if upload[0]:
+                changeProfile(user,upload[2])
+            return render_template("settings.html",message=upload[1])
+        if request.form["b"] == "Change":
+            current = request.form["current"]
+            pword1 = request.form["new"]
+            pword2 = request.form["newConfirm"]
+            change = changePassword(user,current,pword1,pword2)
+            return render_template("settings.html",message=change[1])
+            
+                
     return render_template("settings.html")
 
 @app.route('/recognition',methods=["GET","POST"])

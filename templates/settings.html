@@ -43,18 +43,23 @@
 </div>
         </div>
         <div class="col-lg-9">
-           <div class="jumbotron">
-		<h2>Profile Picture</h2>
-		<p>If picture, then show pic with option to change. If no pic, then alert saying that picture is needed to play</p>
-		<hr>
-		<h2>Change Password</h2>
-		<form role="form" class="form-horizontal" method="POST">
-			<div class="form-group">
-				<p><input type="text" class="form-control" name="entry" placeholder="Your Current Password"></p>
-				<p><input type="text" class="form-control" name="entry" placeholder="Your New Password"></p>
-				<p><input type="text" class="form-control" name="entry" placeholder="Confirm New Password"></p>
+            <div class="jumbotron">
+                   {% if message is defined %}
+                <div class="alert alert-danger " role="alert">
+                    {{message}}
+                </div>
+                {% endif %}
+		        <h2>Profile Picture</h2>
+                <form role="form" enctype="multipart/form-data"  class="form-horizontal" method="POST">
+                    <input type="file" name="f" class="btn btn-default"><br>
+                    <p><input type="submit" name="b" class="btn btn-danger" value="Change Profile"></p>
+		            <hr>
+		            <h2>Change Password</h2>
+			        <div class="form-group">
+				<p><input type="password" class="form-control" name="current" placeholder="Your Current Password"></p>
+				<p><input type="password" class="form-control" name="new" placeholder="Your New Password"></p>
+				<p><input type="password" class="form-control" name="newConfirm" placeholder="Confirm New Password"></p>
 				</p><input type="submit" name="b" class="btn btn-danger" value="Change">
-				<input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
 			</div>
 		<form>
 	</div>
