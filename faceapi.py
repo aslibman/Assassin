@@ -65,7 +65,6 @@ def kairosapiRECOGNIZE(facepath):
                 for b in x:
                     if b!="enrollment_timestamp":
                         l.append(b)
-            print l
             return l 
             
     except:
