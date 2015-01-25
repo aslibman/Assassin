@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget, uploadFile
 from functools import wraps
-from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW
+from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW, timecheck
 import json
 app = Flask('__name__')
 app.config['SECRET_KEY'] = "change this"
@@ -174,21 +174,23 @@ def target():
             f = uploadFile(f,player["user"]+"TARGET")
             if f[0]:
                 path = "static/uploads/" + f[2]
-                if kairosapiDETECT(path):
-                    targetUser = getTarget(ID)["user"]
-                    if targetUser in kairosapiRECOGNIZE(path):
-                        #print "KILLED"
-                        killTarget(ID)
-                        return redirect(url_for("home"))
+                if timecheck(path):
+                    if kairosapiDETECT(path):
+                        targetUser = getTarget(ID)["user"]
+                        if targetUser in kairosapiRECOGNIZE(path):
+                            #print "KILLED"
+                            killTarget(ID)
+                            return redirect(url_for("home"))
+                        else:
+                            #print kairosapiRECOGNIZE(path)
+                            message="Face Recognition failed. Sending a notification to your target."
+                            #possible notification in case face recog fails
+                            #return False
                     else:
-                        #print kairosapiRECOGNIZE(path)
-                        message="Face Recognition failed. Sending a notification to your target."
-                        #possible notification in case face recog fails
+                        message= "No face in the photo detected. Try again."
                         #return False
                 else:
-                    message= "No face in the photo detected. Try again."
-                    #return False
-                
+                    message = "File Created too long ago."
     if game != 0 and getGame(game)["started"]:
         gameStarted = True
         target = getTarget(ID)
@@ -244,6 +246,8 @@ def recognition():
             kairosapiREMOVESUBJECT("victorgaitour")
         if request.form["b"] == "listall":
             kairosapiVIEW("Assassin")
+        if request.form["b"] == "stamp":
+            timecheck("photos/me.jpg")
     return render_template("recognition.html")
 
 
