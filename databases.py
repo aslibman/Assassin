@@ -27,9 +27,15 @@ def uploadFile(file,name):
 
 def processImg(imgPath):
     img = Image.open(imgPath)
-    img = Transpose().process(img)
-    img.save(imgPath)
-
+    exif = img._getexif()
+    if exif:
+        if orientation_key in exif:
+            orientation = exif[orientation_key]
+            rotate_values = {3:180, 6:270, 8:90}
+            if orientation in rotate_values:
+                image = image.rotate(rotate_values[orientation])
+                img.save(imgPath, quality = 100)
+        
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):
     if user == "":
