@@ -3,7 +3,6 @@ Assassin
 By David Dvorkin, Victor Gaitour, Kyler Chase, Julian Kalogerakis, Alex Libman  
 
 Gunicorn: http://104.236.123.216 <br>
-Apache: http://104.236.75.55 <br>
 (Seperate servers)
 
 ## Installation
