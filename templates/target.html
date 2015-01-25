@@ -161,8 +161,10 @@
 	    <div id="map-canvas"></div>
 	    {% if gameStarted %}
 	    <p>Target: {{target["name"]}}<img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
-        <input type="file" name="f" class="btn btn-default"><br>
+        <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="f" class="btn btn-default" accept="image/*;capture=camera"><br>
 	    <input type="submit" name="b" class="btn btn-primary" value="Confirm">
+        </form>
 	    {% endif %}
 	  </div>
 	</div>

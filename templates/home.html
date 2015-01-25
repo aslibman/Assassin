@@ -53,7 +53,7 @@
                <p> Description: {{game["description"]}}</p>
                <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
 {% if canStartGame %}
-			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> Player Count: {{len(game["players"].keys())}}</p>
+			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> Player Count: {{gameSize}}</p>
 {% endif %}
 			   </form>
 		       <hr>

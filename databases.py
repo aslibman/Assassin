@@ -22,7 +22,7 @@ def uploadFile(file,name):
     fileExtension = file.filename.split(".")[-1]
     fileSave = name + "." + fileExtension
     file.save(os.path.join(upload_folder, fileSave))
-    return (True,"File successfully uploaded.")
+    return (True,"File successfully uploaded.",fileSave)
 
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):

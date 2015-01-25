@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget
+from databases import register, authenticate, getInfoByUser, getInfoByID, inGame, getTarget, createGame, getGame, leaveGame, assignTargets, updateLocation, joinGame, countPlayers, isHost, killTarget, uploadFile
 from functools import wraps
 from faceapi import kairosapiENROLL, kairosapiRECOGNIZE, kairosapiREMOVESUBJECT, kairosapiDETECT, kairosapiVIEW
 import json
@@ -52,9 +52,12 @@ def home():
             leaveGame(ID)
             return redirect(url_for("home"))
         if request.form["b"] == "Start":
-			assignTargets(playerInfo["game"])
+            assignTargets(playerInfo["game"])
        ## target = getTarget(ID)
-    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame)
+    gameSize = 0
+    if canStartGame:
+        gameSize = countPlayers(game["num"])
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame,gameSize=gameSize)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -158,14 +161,6 @@ def target():
     if lat != None and lng != None:
         updateLocation(ID,float(lat),float(lng))
         
-    if game != 0 and getGame(game)["started"]:
-        gameStarted = True
-        target = getTarget(ID)
-        targetJSON = getTarget(ID);
-        targetLat = targetJSON["loc"]["lat"];
-        targetLng = targetJSON["loc"]["lng"];
-        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted)
-        
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
@@ -173,21 +168,33 @@ def target():
         if request.form["b"] == "Settings":
             return redirect(url_for("settings"))
         if request.form["b"] == "Confirm":
-            #grab img and compare using API (use uploadFile to upload if needed)
-            if True:#victors stuff
-                killTarget(ID)
             #victor's stuff
-            #if kairosapiDETECT(fileSave):
-            #    if kairosapiRECOGNIZE(fileSave)==ID:
-            #        killTarget(ID)
-            #    else:
-            #        message="Face Recognition failed. Sending a notification to your target."
-                    #possible notification in case face recog fails
-            #        return False
-            #else:
-            #    message= "No face in the photo detected. Try again."
-            #    return False
-        
+            f = request.files["f"]
+            f = uploadFile(f,player["user"]+"TARGET")
+            if f[0]:
+                path = "static/uploads/" + f[2]
+                if kairosapiDETECT(path):
+                    if kairosapiRECOGNIZE(path)==ID:
+                        #print "KILLED"
+                        killTarget(ID)
+                        return redirect(url_for("home"))
+                    else:
+                        #print kairosapiRECOGNIZE(path)
+                        message="Face Recognition failed. Sending a notification to your target."
+                        #possible notification in case face recog fails
+                        #return False
+                else:
+                    message= "No face in the photo detected. Try again."
+                    #return False
+                
+    if game != 0 and getGame(game)["started"]:
+        gameStarted = True
+        target = getTarget(ID)
+        targetJSON = getTarget(ID);
+        targetLat = targetJSON["loc"]["lat"];
+        targetLng = targetJSON["loc"]["lng"];
+        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted)
+    
     return render_template("target.html",gameStarted=gameStarted)
 
 @app.route('/search', methods=['GET', 'POST'])
