@@ -151,6 +151,7 @@ def profile(username=None):
 @app.route('/target', methods=['GET', 'POST'])
 @loginRequired
 def target():
+    message=""
     player = getInfoByUser(session["username"])
     ID = player["num"]
     game = player["game"]
@@ -195,7 +196,7 @@ def target():
         targetJSON = getTarget(ID);
         targetLat = targetJSON["loc"]["lat"];
         targetLng = targetJSON["loc"]["lng"];
-        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted)
+        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted, message=message)
     
     return render_template("target.html",gameStarted=gameStarted)
 
@@ -211,7 +212,7 @@ def search():
         if request.form["b"] == "Search":
             result = getInfoByUser(request.form["entry"])
             if result == None:
-                return render_template("search.html", message="Username does not exist")
+                return render_template("search.html", alert=True)
             else:
                 return redirect(url_for("profile",username=result["user"]))
     return render_template("search.html")

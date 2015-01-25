@@ -2,7 +2,8 @@ import json
 import os
 from urllib2 import Request, urlopen
 import base64
-
+import os.path, time
+import datetime
 
 def kairosapiENROLL(facepath,id):
     with open(facepath,'rb') as img:
@@ -59,7 +60,14 @@ def kairosapiRECOGNIZE(facepath):
         if d['images'][0]['transaction']['status']=='failure':
             return False
         elif d['images'][0]['transaction']['status']=='success':
-            return d['images'][0]['candidates'][0].keys()[0]
+            d=d['images'][0]['candidates']
+            l=[]
+            for x in d:
+                for b in x:
+                    if b!="enrollment_timestamp":
+                        l.append(b)
+            return l 
+            
     except:
         return False
 
@@ -129,3 +137,15 @@ def kairosapiVIEW(galleryid):
     d=json.loads(response_body)
     print d
     
+def timecheck(filesave):
+    x= os.path.getctime(filesave)
+    x=datetime.datetime.fromtimestamp(x)
+    y=datetime.datetime.now()-datetime.timedelta(seconds=30)
+    print x
+    print y
+    if x > y:
+        print True
+        return True
+    else:
+        print False
+        return False

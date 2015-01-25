@@ -2,11 +2,20 @@
 
 <html lang="en">
 
+
   <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <title>Assassin</title>
+	<style>
+	@media screen and (max-width:1025px) {
+   #content {
+     width: 100%;
+   }
+}
+</style>
   </head>
+
 
   <body>
       <nav class="navbar navbar-default">
@@ -33,13 +42,13 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3">
-            <div class="container-left" style="max-width:300px;">
+            <div class="container-left">
 <ul class="nav nav-pills nav-stacked">
-  <li role="presentation" class="active"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-  <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-  <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
-  <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-  <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+  <li role="presentation" class="active"><a href="/home"><h4><span class="glyphicon glyphicon-home"></span>  Home</h4></a></li>
+  <li role="presentation"><a href="/profile"><h4><span class="glyphicon glyphicon-user"></span>  Profile</h4></a></li>
+  <li role="presentation"><a href="/target"><h4><span class="glyphicon glyphicon-screenshot"></span>  Target</h4></a></li>
+  <li role="presentation"><a href="/search"><h4><span class="glyphicon glyphicon-search"></span>  Search</h4></a></li>
+  <li role="presentation"><a href="/settings"><h4><span class="glyphicon glyphicon-cog"></span>  Settings</h4></a></li>
 </ul>
 </div>
         </div>
@@ -56,7 +65,8 @@
 			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> Player Count: {{gameSize}}</p>
 {% endif %}
 			   </form>
-		       <hr>
+	
+		     <hr>
                {% else %}
                <p> You are not currently in a game. To join a game, enter the host's name into the search page.</p>
                <hr>
