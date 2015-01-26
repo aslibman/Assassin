@@ -158,7 +158,9 @@
         <div class="col-lg-9">
           <div class="jumbotron">
 	    <h2>My Target</h2>
+		{% if gameStarted %}
 		<p class="text-warning">Target: <a href="/profile/{{target['user']}}">{{target["name"]}}</a>
+		{% endif %}
 	    <div id="map-canvas"></div>
 		<hr>
 	    {% if gameStarted %}
