@@ -189,7 +189,7 @@ def target():
             f = uploadFile(f,targetUser+"TARGET")
             if f[0]:
                 path = "static/uploads/" + f[2]
-                processImg(path)
+                #processImg(path)
                 if kairosapiDETECT(path):
                     if targetUser in kairosapiRECOGNIZE(path):
                         killTarget(ID)
