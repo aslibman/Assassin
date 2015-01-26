@@ -52,7 +52,7 @@ def home():
         elif request.form["b"] == "Leave Game":
             leaveGame(ID)
             return redirect(url_for("home"))
-        elif request.form["b"] == "Start":
+        elif request.form["b"] == "Start Game":
             assignTargets(playerInfo["game"])
             return redirect(url_for("home"))
         elif request.form["b"] == "Yes":
