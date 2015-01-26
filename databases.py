@@ -94,6 +94,7 @@ def changePassword(user,current,pword1,pword2):
     v = validPassword(pword1)
     if not v[0]:
         return v
+    pword = base64.b64encode(pword)
     db.users.update({"user":user},{"$set":{"password":pword1}})
     return (True,"Password changed successfully.")
     
