@@ -73,7 +73,7 @@
                <p> Description: {{game["description"]}}</p>
                <p class="text-danger"><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p><hr>
 {% if canStartGame %}
-			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> <u><h2>Players: ({{gameSize}})</h2></u></p><br>
+		<h3>Players: ({{gameSize}})  <input type="submit" name="b" class="btn btn-success" value="Start"></h3><br>
                {% for e in playerList %}
                <!--Style Here-->
                <p><img src="/static/uploads/{{e['pic']}}" class="img-responsive" height="50px" width="50px">   
