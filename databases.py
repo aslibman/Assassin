@@ -1,6 +1,5 @@
 from pymongo import Connection
-import random
-import os
+import random, os, base64, string
 from faceapi import kairosapiDETECT, kairosapiENROLL
 from PIL import Image
 conn = Connection()
@@ -8,9 +7,11 @@ db = conn['game']
 
 upload_folder = "static/uploads/"
 allowedExtensions = ['png', 'jpg']
+allowedChars = string.letters + string.digits
 #maxPicSize = 4 * 1024 * 1024
 #defaultImg = "null.jpeg"
 
+### FILE FUNCTIONS
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in allowedExtensions
@@ -40,8 +41,13 @@ def processImg(imgPath):
         
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):
+    user = user.lower()
     if user == "":
         return (False,"Please enter a username.")
+    if len(user) > 15 or len(user) < 4:
+        return (False,"Username must be between 4 and 15 characters long.")
+    if False in [c in allowedChars for c in user]:
+        return (False,"Username can only contain letters and numbers.")
     if next(db.users.find({"user":user}),None) != None:
         return (False,"The username entered is already registered.")
     if pword == "" or pword2 == "":
@@ -50,7 +56,8 @@ def register(user,pword,pword2,name,file):
         return (False,"The passwords entered do not match.")
     v = validPassword(pword)
     if not v[0]:
-        return v[1]    
+        return v
+    pword = base64.b64encode(pword)
     if name == "":
         return (False,"No name entered.")
     num = next(db.users.find({},{"password":False},sort=[("num",-1)]),None)
@@ -63,7 +70,7 @@ def register(user,pword,pword2,name,file):
         return f
     fileExtension = file.filename.split(".")[-1]
     fileSave = user + "." + fileExtension
-    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0},"request":0}]        
     db.users.insert(list)
     kairosapiENROLL(upload_folder+fileSave,user)
     return (True,"Successfully registered.")
@@ -74,6 +81,8 @@ def changeProfile(user,path):
 def validPassword(pword):
     if len(pword) == 0:
         return (False,"Password cannot be blank.")
+    if len(pword) > 15 or len(pword) < 5:
+        return (False,"Password must be between 5 and 15 characters long.")
     return (True,"Password valid.")
     
 def changePassword(user,current,pword1,pword2):
@@ -95,6 +104,7 @@ def authenticate(user,pword):
         return (False,"Please enter your password.")
     if next(db.users.find({"user":user}),None) == None:
         return (False,"No such username is registered.")
+    pword = base64.b64encode(pword)
     if next(db.users.find({"user":user,"password":pword}),None) == None:
         return (False,"Incorrect password.")
     return (True,"Successfully logged in.")
@@ -161,6 +171,16 @@ def isHost(playerID):
 
 def updateLocation(playerID,lat,lng):
     db.users.update({"num":playerID},{"$set":{"loc":{"lat":lat,"lng":lng}}})
+
+def sendManualRequest(playerID):
+    target = getTarget(playerID)
+    db.users.update({"num":target["num"]},{"$set":{"request":playerID}})
+
+def answerRequest(playerID,answer):
+    player = getInfoByID(playerID)
+    if answer:
+        killTarget(player["request"])
+    db.users.update({"num":playerID},{"$set":{"request":0}})
     
 ### GAME FUNCTIONS
 def createGame(hostID,description,private=False):
@@ -210,6 +230,6 @@ def getPlayers(gameID):
     return [getInfoByID(int(i)) for i in players.keys()]
     
 if __name__ == "__main__":
-    print "Clearing the users database"
+    print "Clearing the databases"
     db.users.drop()
     db.games.drop()
