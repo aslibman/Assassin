@@ -78,6 +78,8 @@ def home():
 @redirectIfLoggedIn
 def login():
     if request.method == "POST":
+        if request.form["b"] == "About":
+            return redirect(url_for("about"))
         if request.form["b"] == "Sign Up":
             return redirect(url_for("registration"))
         
@@ -99,6 +101,8 @@ def login():
 @redirectIfLoggedIn
 def registration():
     if request.method == "POST":
+        if request.form["b"] == "About":
+            return redirect(url_for("about"))
         if request.form["b"] == "Log In":
             return redirect(url_for("login"))
         
@@ -121,9 +125,6 @@ def registration():
 def index():
     return render_template('index.html')
 
-@app.route("/about", methods = ["POST" , "GET"])
-def about():
-	return render_template("about.html")
 
 @app.route('/profile', methods=['GET', 'POST'])
 @app.route('/profile/', methods=['GET', 'POST'])
@@ -275,6 +276,15 @@ def recognition():
         if request.form["b"] == "listall":
             kairosapiVIEW("Assassin")
     return render_template("recognition.html")
+
+@app.route('/about', methods=["GET", "POST"])
+def about():
+    if request.method == "POST":
+        if request.form["b"] == "Sign Up":
+            return redirect(url_for("registration"))
+        if request.form["b"] == "Log In":
+            return redirect(url_for("login"))
+    return render_template("about.html")
 
 
 if __name__=="__main__":

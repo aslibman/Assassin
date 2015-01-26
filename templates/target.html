@@ -165,7 +165,7 @@
 	    <h4>Target's Picture:</h4> <img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
         <form method="POST" enctype="multipart/form-data">
         <input type="file" name="f" class="btn btn-default" accept="image/*;capture=camera"><br>
-	    <input type="submit" name="b" class="btn btn-primary" value="Confirm">
+	    <input type="submit" name="b" class="btn btn-danger" value="Confirm">
 	    {% endif %}
 	    {{message}}
         {% if manualConfirm %}
