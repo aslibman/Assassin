@@ -3,7 +3,9 @@ Assassin
 By David Dvorkin, Victor Gaitour, Kyler Chase, Julian Kalogerakis, Alex Libman  
 
 Gunicorn: http://104.236.123.216 <br>
-(Seperate servers)
+
+## What It Does
+<i>Placeholder</i>
 
 ## Installation
 1. Clone the repository: `git clone git@github.com:kingalex11235/Assassin.git`
@@ -14,8 +16,12 @@ Gunicorn: http://104.236.123.216 <br>
 6. Install the pymongo module: `pip install pymongo`
 7. Configure your server to deploy app.py
 
-## What It Does
-<i>Placeholder</i>
+## Roles
+* Alex: Backend, General Management
+* Victor: Facial Recognition
+* Julian: Geolocation
+* David: Flask
+* Kyler: Frontend
 
 ## Timeline
 ### 12/21/14
@@ -42,4 +48,3 @@ Gunicorn: http://104.236.123.216 <br>
 
 ### Afterwards
 * Miscellaneous features
-
