@@ -76,9 +76,8 @@
 		<h3>Players: ({{gameSize}})  <input type="submit" name="b" class="btn btn-success" value="Start Game"></h3><br>
                {% for e in playerList %}
                <!--Style Here-->
-               <p><img src="/static/uploads/{{e['pic']}}" class="img-responsive" height="50px" width="50px">   
-               <b><a href="/profile/{{e['user']}}">{{e['name']}}</a></b> 
-               <input type="submit" name="b" class="btn btn-warning" value={{e['num']}}>Kick</p>
+               <p><input type="submit" name="b" class="btn btn-warning" value="Kick" value={{e['num']}}> <img src="/static/uploads/{{e['pic']}}" height="50px" width="50px">  <b><a href="/profile/{{e['user']}}">{{e['name']}}</a></b> 
+               </p>
 		<hr>
                <!--  -->
                {% endfor %}
