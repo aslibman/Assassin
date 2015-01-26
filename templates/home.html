@@ -2,11 +2,20 @@
 
 <html lang="en">
 
+
   <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <title>Assassin</title>
+	<style>
+	@media screen and (max-width:1025px) {
+   #content {
+     width: 100%;
+   }
+}
+</style>
   </head>
+
 
   <body>
       <nav class="navbar navbar-default">
@@ -33,31 +42,50 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3">
-            <div class="container-left" style="max-width:300px;">
+            <div class="container-left">
 <ul class="nav nav-pills nav-stacked">
-  <li role="presentation" class="active"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-  <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-  <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
-  <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-  <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+  <li role="presentation" class="active"><a href="/home"><h4><span class="glyphicon glyphicon-home"></span>  Home</h4></a></li>
+  <li role="presentation"><a href="/profile"><h4><span class="glyphicon glyphicon-user"></span>  Profile</h4></a></li>
+  <li role="presentation"><a href="/target"><h4><span class="glyphicon glyphicon-screenshot"></span>  Target</h4></a></li>
+  <li role="presentation"><a href="/search"><h4><span class="glyphicon glyphicon-search"></span>  Search</h4></a></li>
+  <li role="presentation"><a href="/settings"><h4><span class="glyphicon glyphicon-cog"></span>  Settings</h4></a></li>
 </ul>
 </div>
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>Your Game</h2>
-    <!-- if you are in a game -->
-    <p> Currently in (gameStuff name)'s game.</p>
-    <p> Your Target: (gameStuff target)</p>
-    <p> Description: (gamestuff description)</p>
-     <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
-		<hr>
-    <!-- else -->
-    <h2>Your Game</h2>
-    <p> You are not currently in a game. To join a game, enter the host's name into the search page.</p>
-    <hr>
-    <h2>Create Game</h2>
-    
+               <form role="form" class="form-horizontal" method="POST">
+                   <h2>Your Game</h2>
+               {% if playerInGame %}
+               <p> Currently in {{game["name"]}}.</p>
+               <p> Your Target: {{target["name"]}}</p>
+               <p> Description: {{game["description"]}}</p>
+               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
+{% if canStartGame %}
+			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> <u><h2>Players: ({{gameSize}})</h2></u></p><br>
+               {% for e in playerList %}
+               <!--Style Here-->
+               <img src="/static/uploads/{{e['pic']}}" height="50px" width="50px">   
+               <b><a href="/profile/{{e['user']}}">{{e['name']}}</a></b>
+               <button type="submit" name="b" class="btn btn-primary" value={{e['num']}}>Kick</button><br>
+               <!--  -->
+               {% endfor %}
+{% endif %}
+			   </form>
+	
+		     <hr>
+               {% else %}
+               <p> You are not currently in a game. To join a game, enter the host's name into the search page.</p>
+               <hr>
+               <h2>Create Game</h2>
+	           <form role="form" class="form-horizontal" method="POST">
+			       <div class="form-group">
+				       <p><input type="text" class="form-control" name="entry" placeholder="Game Description"></p>
+		</p><input type="submit" name="b" class="btn btn-primary" value="Create">
+		<input type="submit" name="b" class="btn btn-default" value="Cancel"></p>
+			       </div>
+		       </form>
+               {% endif %}
 	</div>
 </div>	
         </div>

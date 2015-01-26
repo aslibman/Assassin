@@ -16,13 +16,7 @@
       }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.js"></script>
     <script>
-      // Browser doesn't support Geolocation
-      {% if gameStarted %}
-      var targetLat = {{targetLat}};
-      var targetLng = {{targetLng}};
-      {% endif %}
       var map;
       var stuy = new google.maps.LatLng(40.718014, -74.013894);
       var MY_MAPTYPE_ID = 'custom_style';
@@ -63,19 +57,8 @@
           navigator.geolocation.getCurrentPosition(
             function(position) {
               var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+              
               var image = 'redBall.png';
-      {% if gameStarted %}
-              var targetPos = new google.maps.LatLng(targetLat, targetLng);
-              $.getJSON("/target",{latitude:pos.lat(), longitude:pos.lng()});
-              var targetMarker = new google.maps.Marker(
-                {
-                  map: map,
-                  position: targetPos,
-                  //icon: image,
-                  title: "Your Target's Location"
-                }
-              );
-      {% endif %}
               var playerMarker = new google.maps.Marker(
                 {
                   map: map,
@@ -97,7 +80,6 @@
         var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
         map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
       }   
-
 
       function handleNoGeolocation(errorFlag) {
         if (errorFlag) {
@@ -145,13 +127,13 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-3">
-          <div class="container-left">
+          <div class="container-left" style="max-width:300px;">
 	    <ul class="nav nav-pills nav-stacked">
-	      <li role="presentation"><a href="/home"><h4><span class="glyphicon glyphicon-home"></span>  Home</h4></a></li>
-	      <li role="presentation"><a href="/profile"><h4><span class="glyphicon glyphicon-user"></span>  Profile</h4></a></li>
-	      <li role="presentation" class="Active"><a href="/target"><h4><span class="glyphicon glyphicon-screenshot"></span> Target</h4></a></li>
-	      <li role="presentation"><a href="/search"><h4><span class="glyphicon glyphicon-search"></span>  Search</h4></a></li>
-	      <li role="presentation"><a href="/settings"><h4><span class="glyphicon glyphicon-cog"></span>  Settings</h4></a></li>
+	      <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+	      <li role="presentation"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+	      <li role="presentation" class="Active"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
+	      <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+	      <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
 	    </ul>
 	  </div>
         </div>
@@ -159,16 +141,9 @@
           <div class="jumbotron">
 	    <h2>My target</h2>
 	    <div id="map-canvas"></div>
-	    {% if gameStarted %}
-	    <p>Target: {{target["name"]}}<img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
-        <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="f" class="btn btn-default" accept="image/*;capture=camera"><br>
-	    <input type="submit" name="b" class="btn btn-primary" value="Confirm">
-        </form>
-	    {% endif %}
-	    {{message}}
+	    <p>Name of target, map for geolocation stuff, place for photo upload. This is where most things will happen</p>
 	  </div>
-	</div>
+	</div>	
       </div>
     </div>
 </div>

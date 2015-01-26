@@ -1,20 +1,45 @@
 from pymongo import Connection
 import random
-
+import os
+from faceapi import kairosapiDETECT, kairosapiENROLL
+from PIL import Image
 conn = Connection()
 db = conn['game']
 
-upload_folder = "uploads/"
-allowedExtensions = ['png', 'jpg', 'jpeg', 'gif']
-maxPicSize = 4 * 1024 * 1024
-defaultImg = "null.jpeg"
+upload_folder = "static/uploads/"
+allowedExtensions = ['png', 'jpg']
+#maxPicSize = 4 * 1024 * 1024
+#defaultImg = "null.jpeg"
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1] in allowedExtensions
+        filename.rsplit('.', 1)[1].lower() in allowedExtensions
 
+def uploadFile(file,name):
+    if not file:
+        return (False,"No image selected.")
+    if not allowed_file(file.filename):
+        return (False,"File is of wrong type. (Jpg and Png are supported)")
+    fileExtension = file.filename.split(".")[-1]
+    fileSave = name + "." + fileExtension
+    file.save(os.path.join(upload_folder, fileSave))
+    if kairosapiDETECT(upload_folder+fileSave)==False:
+        return (False, "Please upload a picture with a face in it.")
+    return (True,"File successfully uploaded.",fileSave)
+
+def processImg(imgPath):
+    img = Image.open(imgPath)
+    exif = img._getexif()
+    if exif:
+        if orientation_key in exif:
+            orientation = exif[orientation_key]
+            rotate_values = {3:180, 6:270, 8:90}
+            if orientation in rotate_values:
+                image = image.rotate(rotate_values[orientation])
+                img.save(imgPath, quality = 100)
+        
 ### PLAYER FUNCTIONS
-def register(user,pword,pword2,name,file=False):
+def register(user,pword,pword2,name,file):
     if user == "":
         return (False,"Please enter a username.")
     if next(db.users.find({"user":user}),None) != None:
@@ -23,6 +48,9 @@ def register(user,pword,pword2,name,file=False):
         return (False,"No password entered in one or more of the fields.")
     if pword != pword2:
         return (False,"The passwords entered do not match.")
+    v = validPassword(pword)
+    if not v[0]:
+        return v[1]    
     if name == "":
         return (False,"No name entered.")
     num = next(db.users.find({},{"password":False},sort=[("num",-1)]),None)
@@ -30,19 +58,36 @@ def register(user,pword,pword2,name,file=False):
         i = 1
     else:
         i = num["num"] + 1
-    if file:
-        if not allowed_file(file.filename):
-            return (False,"File is of wrong type. (Jpg, Jpeg, Png, and Gif are supported)")
-        else:
-            fileExtension = file.filename.split(".")[-1]
-            fileSave = user + "." + fileExtension
-            file.save(os.path.join(upload_folder, fileSave))
-            list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0}}]
-    else:
-        list = [{"user":user,"password":pword,"name":name,"num":i,"pic":defaultImg,"game":0,"stats":{"kills":0,"deaths":0}}]
+    f = uploadFile(file,user)
+    if not f[0]:
+        return f
+    fileExtension = file.filename.split(".")[-1]
+    fileSave = user + "." + fileExtension
+    list = [{"user":user,"password":pword,"name":name,"num":i,"pic":fileSave,"game":0,"stats":{"kills":0,"deaths":0,"gamesPlayed":0,"gamesWon":0},"loc":{"lat":0,"lng":0}}]        
     db.users.insert(list)
+    kairosapiENROLL(upload_folder+fileSave,user)
     return (True,"Successfully registered.")
-	
+
+def changeProfile(user,path):
+    db.users.update({"user":user},{"$set":{"pic":path}})
+    
+def validPassword(pword):
+    if len(pword) == 0:
+        return (False,"Password cannot be blank.")
+    return (True,"Password valid.")
+    
+def changePassword(user,current,pword1,pword2):
+    r = authenticate(user,current)
+    if not r[0]:
+        return r
+    if pword1 != pword2:
+        return (False,"The new passwords entered do not match.")
+    v = validPassword(pword1)
+    if not v[0]:
+        return v
+    db.users.update({"user":user},{"$set":{"password":pword1}})
+    return (True,"Password changed successfully.")
+    
 def authenticate(user,pword):
     if user == "":
         return (False,"Please enter your username.")
@@ -74,14 +119,20 @@ def killTarget(playerID): #kills the target of player with given ID
     targetID = target["num"]
     targetStats = target["stats"]
     targetStats["deaths"] += 1
-    db.users.update({"num":playerID},{"$set":{"stats":playerStats}})
-    db.users.update({"num":targetID},{"$set":{"stats":targetStats}})
+    targetStats["gamesPlayed"] += 1
     newTargetID = getTarget(targetID)["num"]
     game = getInfoByID(playerID)["game"]
-    gamePlayers = getGame(game)["players"]
-    gamePlayers[str(playerID)] = newTargetID
-    gamePlayers[str(targetID)] = -1
-    db.games.update({"num":game},{"$set":{"players":gamePlayers}})
+    if newTargetID == playerID:
+        playerStats["gamesPlayed"] += 1
+        playerStats["gamesWon"] += 1
+        deleteGame(game)
+    else:
+        gamePlayers = getGame(game)["players"]
+        gamePlayers[str(playerID)] = newTargetID
+        gamePlayers.pop(str(targetID))
+        db.games.update({"num":game},{"$set":{"players":gamePlayers}})
+    db.users.update({"num":playerID},{"$set":{"stats":playerStats}})
+    db.users.update({"num":targetID},{"$set":{"stats":targetStats,"game":0}})
 
 def inGame(playerID):
     return not getInfoByID(playerID)["game"] == 0
@@ -89,29 +140,42 @@ def inGame(playerID):
 def leaveGame(playerID):
     player = getInfoByID(playerID)
     game = getGame(player["game"])
-    playerList = game["players"]
-    if game["started"]:
-        leaverTarget = playerList.pop(str(playerID))
-        for p in playerList.keys():
-            if playerList[p] == playerID:
-                playerList[p] = leaverTarget
+    if game["host"] != playerID:
+        playerList = game["players"]
+        if game["started"]:
+            leaverTarget = playerList.pop(str(playerID))
+            for p in playerList.keys():
+                if playerList[p] == playerID:
+                    playerList[p] = leaverTarget
+        else:
+            playerList.pop(str(playerID))
+        db.games.update({"num":game["num"]},{"$set":{"players":playerList}})
+        db.users.update({"num":playerID},{"$set":{"game":0}})
     else:
-        playerList.pop(str(playerID))
-    db.games.update({"num":game["num"]},{"$set":{"players":playerList}})
-    db.users.update({"num":playerID},{"$set":{"game":0}})
-        
+        deleteGame(game["num"])
 
+def isHost(playerID):
+    player = getInfoByID(playerID)
+    game = player["game"]
+    return game != 0 and getGame(game)["host"] == playerID
+
+def updateLocation(playerID,lat,lng):
+    db.users.update({"num":playerID},{"$set":{"loc":{"lat":lat,"lng":lng}}})
+    
 ### GAME FUNCTIONS
-def createGame(name,description,private=False):
+def createGame(hostID,description,private=False):
     nums = [i["num"] for i in db.games.find({})]
     nums.append(0)
     n = max(nums)
-    game = [{"num":n+1,"name":name,"description":description,"private":private,"players":{},"started":False}]
+    host = getInfoByID(hostID)
+    gameName = host["user"] + "'s game"
+    game = [{"num":n+1,"host":hostID,"name":gameName,"description":description,"private":private,"players":{},"started":False}]
     db.games.insert(game)
+    joinGame(n+1,hostID)
     return n + 1
-
-def getGame(n):
-    return db.games.find_one({"num":n})
+	
+def getGame(gameID):
+    return db.games.find_one({"num":gameID})
 
 def joinGame(gameID,playerID):
     gamePlayers = getGame(gameID)["players"]
@@ -119,6 +183,12 @@ def joinGame(gameID,playerID):
     db.games.update({"num":gameID},{"$set":{"players":gamePlayers}})
     db.users.update({"num":playerID},{"$set":{"game":gameID}})
 
+def deleteGame(gameID):
+    game = getGame(gameID)
+    for player in game["players"].keys():
+        db.users.update({"num":int(player)},{"$set":{"game":0}})
+    db.games.remove({"num":gameID})
+        
 def assignTargets(gameID):
     game = getGame(gameID)["players"]
     n = game.keys()
@@ -128,17 +198,18 @@ def assignTargets(gameID):
     game[n[len(n)-1]] = int(n[0])
     db.games.update({"num":gameID},{"$set":{"players":game,"started":True}})
     
+def countPlayers(gameID):
+    game = getGame(gameID)
+    return len(game["players"])
+
+#used to get list of players other than host in a game
+def getPlayers(gameID):
+    game = getGame(gameID)
+    players = game["players"]
+    players.pop(str(game["host"]))
+    return [getInfoByID(int(i)) for i in players.keys()]
     
 if __name__ == "__main__":
     print "Clearing the users database"
     db.users.drop()
     db.games.drop()
-    #register("A",".",".","a")
-    #register("B",".",".","a")
-    #register("C",".",".","a")
-    #register("D",".",".","a")
-    #createGame("Test","desc")
-    #joinGame(1,1)
-    #joinGame(1,2)
-    #joinGame(1,3)
-    #joinGame(1,4)

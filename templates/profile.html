@@ -9,12 +9,13 @@
   </head>
 
   <body>
+	
       <nav class="navbar navbar-default">
         <div class="container-fluid">
 	<div class="navbar-header">
 	<div class="navbar-brand">
 	
-	<img src="./static/icon.jpg" alt="Brand" height="27px" width="27px">
+	<img src="/static/icon.jpg" alt="Brand" height="27px" width="27px">
 	</div>
 	</div>
 	<h4><span style="line-height:36px;">Assassin</span>
@@ -33,21 +34,46 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3">
-            <div class="container-left" style="max-width:300px;">
+            <div class="container-left">
 <ul class="nav nav-pills nav-stacked">
-  <li role="presentation"><a href="/home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-  <li role="presentation" class="Active"><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-  <li role="presentation"><a href="/target"><span class="glyphicon glyphicon-screenshot"></span> Target</a></li>
-  <li role="presentation"><a href="/search"><span class="glyphicon glyphicon-search"></span> Search</a></li>
-  <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+  <li role="presentation"><a href="/home"><h4><span class="glyphicon glyphicon-home"></span>  Home</h4></a></li>
+	{% if result["user"] == session['username'] %}
+  <li role="presentation" class="active"><a href="/profile"><h4><span class="glyphicon glyphicon-user"></span>  Profile</h4></a></li>
+	{% else %}
+  <li role="presentation"><a href="/profile"><h4><span class="glyphicon glyphicon-user"></span>  Profile</h4></a></li>
+	{% endif %}
+  <li role="presentation"><a href="/target"><h4><span class="glyphicon glyphicon-screenshot"></span>  Target</h4></a></li>
+  <li role="presentation"><a href="/search"><h4><span class="glyphicon glyphicon-search"></span>  Search</h4></a></li>
+  <li role="presentation"><a href="/settings"><h4><span class="glyphicon glyphicon-cog"></span>  Settings</h4></a></li>
 </ul>
 </div>
         </div>
         <div class="col-lg-9">
            <div class="jumbotron">
-		<h2>{{ session['username'] }}'s Profile</h2>
+		       <h2>{{ result["user"] }}'s Profile</h2>
+               <p>{{ result["name"] }}</p>
+		{% if inGame %}
+		<h3>Game</h3>
+		{% if result["user"] == host %}
+		<p>{{ result["user"] }} is currently hosting a game</p>
+		{% else %}
+		<p>{{ result["user"] }} is currently in {{ host }}'s game</p>
+		{% endif %}
+		<p>Description: {{ description }}</p>
+
+		{% if canJoinGame %}
+		<form method="POST">
+		  <input type="submit" name="b" class="btn btn-primary" value="Join Game">
+		</form>
+		{% endif %}
+		{% endif %}
 		<p>Profile Picture</p>
-		<p>Stats? Kills, Deaths, KDR, Games played, etc</p>
+		<img src="/static/uploads/{{result['pic']}}" height="140px" width="140px">
+		<h3>Stats</h3>
+		<p>Kills: {{ result["stats"]["kills"] }}</p>
+		<p>Deaths: {{ result["stats"]["deaths"] }}</p>
+		<p>Games Played: {{ result["stats"]["gamesPlayed"] }}</p>
+        <p>Games Won: {{ result["stats"]["gamesWon"] }}</p>
 	</div>
 </div>	
         </div>
