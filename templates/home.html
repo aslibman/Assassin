@@ -58,22 +58,24 @@
                    <h2>Your Game</h2>
                    {% if playerInGame %}
                    {% if manualRequest %}
-                   Your assassin has submitted a manual confirmation request. Is this you?
-                   <p><img src="/static/uploads/{{user}}TARGET.jpg"> </p>
-                   <p><input type="submit" name="b" class="btn btn-primary" value="Yes">
-                       <input type="submit" name="b" class="btn btn-primary" value="No"></p>
+                   <p class="text-danger"> Your assassin has submitted a manual confirmation request. Is this you?</p>
+                   <p><img src="/static/uploads/{{user}}TARGET.jpg" class="img-responsive"></p>
+                   <p><input type="submit" name="b" class="btn btn-success" value="Yes"> 
+                       <input type="submit" name="b" class="btn btn-danger" value="No"></p>
+			<hr>
                    {% endif %}
                <p> Currently in {{game["name"]}}.</p>
                <p> Your Target: {{target["name"]}}</p>
                <p> Description: {{game["description"]}}</p>
-               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p>
+               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p><hr>
 {% if canStartGame %}
 			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> <u><h2>Players: ({{gameSize}})</h2></u></p><br>
                {% for e in playerList %}
                <!--Style Here-->
-               <img src="/static/uploads/{{e['pic']}}" height="50px" width="50px">   
-               <b><a href="/profile/{{e['user']}}">{{e['name']}}</a></b>
-               <button type="submit" name="b" class="btn btn-primary" value={{e['num']}}>Kick</button><br>
+               <p><img src="/static/uploads/{{e['pic']}}" class="img-responsive" height="50px" width="50px">   
+               <b><a href="/profile/{{e['user']}}">{{e['name']}}</a></b> 
+               <input type="submit" name="b" class="btn btn-warning" value={{e['num']}}>Kick</p>
+		<hr>
                <!--  -->
                {% endfor %}
 {% endif %}
