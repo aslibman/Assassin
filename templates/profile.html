@@ -55,9 +55,9 @@
 		{% if inGame %}
 		<h3>Game</h3>
 		{% if result["user"] == host %}
-		<p>{{ result["user"] }} is currently hosting a game</p>
+		<p class="text-primary">{{ result["user"] }} is currently hosting a game</p>
 		{% else %}
-		<p>{{ result["user"] }} is currently in {{ host }}'s game</p>
+		<p class="text-primary">{{ result["user"] }} is currently in {{ host }}'s game</p>
 		{% endif %}
 		<p>Description: {{ description }}</p>
 
@@ -66,9 +66,11 @@
 		  <input type="submit" name="b" class="btn btn-primary" value="Join Game">
 		</form>
 		{% endif %}
+		<hr>
 		{% endif %}
-		<p>Profile Picture</p>
-		<img src="/static/uploads/{{result['pic']}}" height="140px" width="140px">
+		<h3>Profile Picture</h3>
+		<img src="/static/uploads/{{result['pic']}}" class="img-responsive" height="140px" width="140px">
+		<hr>
 		<h3>Stats</h3>
 		<p>Kills: {{ result["stats"]["kills"] }}</p>
 		<p>Deaths: {{ result["stats"]["deaths"] }}</p>
