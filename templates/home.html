@@ -64,10 +64,14 @@
                        <input type="submit" name="b" class="btn btn-danger" value="No"></p>
 			<hr>
                    {% endif %}
-               <p> Currently in {{game["name"]}}.</p>
+		{% if game["name"] == session["username"] %}
+		<p class="text-primary">Currently hosting your own game</p>
+		{% else %}
+               <p class="text-primary"> Currently in {{game["name"]}}.</p>
+		{% endif %}
                <p> Your Target: {{target["name"]}}</p>
                <p> Description: {{game["description"]}}</p>
-               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p><hr>
+               <p class="text-danger"><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p><hr>
 {% if canStartGame %}
 			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> <u><h2>Players: ({{gameSize}})</h2></u></p><br>
                {% for e in playerList %}
