@@ -1,6 +1,5 @@
 from pymongo import Connection
-import random
-import os
+import random, os, base64, string
 from faceapi import kairosapiDETECT, kairosapiENROLL
 from PIL import Image
 conn = Connection()
@@ -8,6 +7,7 @@ db = conn['game']
 
 upload_folder = "static/uploads/"
 allowedExtensions = ['png', 'jpg']
+allowedChars = string.letters + string.digits
 #maxPicSize = 4 * 1024 * 1024
 #defaultImg = "null.jpeg"
 
@@ -40,8 +40,13 @@ def processImg(imgPath):
         
 ### PLAYER FUNCTIONS
 def register(user,pword,pword2,name,file):
+    user = user.lower()
     if user == "":
         return (False,"Please enter a username.")
+    if len(user) > 15 or len(user) < 4:
+        return (False,"Username must be between 4 and 15 characters long.")
+    if False in [c in allowedChars for c in user]:
+        return (False,"Username can only contain letters and numbers.")
     if next(db.users.find({"user":user}),None) != None:
         return (False,"The username entered is already registered.")
     if pword == "" or pword2 == "":
@@ -50,7 +55,8 @@ def register(user,pword,pword2,name,file):
         return (False,"The passwords entered do not match.")
     v = validPassword(pword)
     if not v[0]:
-        return v[1]    
+        return v
+    pword = base64.b64encode(pword)
     if name == "":
         return (False,"No name entered.")
     num = next(db.users.find({},{"password":False},sort=[("num",-1)]),None)
@@ -74,6 +80,8 @@ def changeProfile(user,path):
 def validPassword(pword):
     if len(pword) == 0:
         return (False,"Password cannot be blank.")
+    if len(pword) > 15 or len(pword) < 5:
+        return (False,"Password must be between 5 and 15 characters long.")
     return (True,"Password valid.")
     
 def changePassword(user,current,pword1,pword2):
@@ -95,6 +103,7 @@ def authenticate(user,pword):
         return (False,"Please enter your password.")
     if next(db.users.find({"user":user}),None) == None:
         return (False,"No such username is registered.")
+    pword = base64.b64encode(pword)
     if next(db.users.find({"user":user,"password":pword}),None) == None:
         return (False,"Incorrect password.")
     return (True,"Successfully logged in.")
