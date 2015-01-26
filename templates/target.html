@@ -140,7 +140,7 @@
       </div>
     </nav>
     </h4>
-    
+  
     
     <div class="container-fluid">
       <div class="row">
@@ -157,10 +157,12 @@
         </div>
         <div class="col-lg-9">
           <div class="jumbotron">
-	    <h2>My target</h2>
+	    <h2>My Target</h2>
+		<p class="text-warning">Target: <a href="/profile/{{target['user']}}">{{target["name"]}}</a>
 	    <div id="map-canvas"></div>
+		<hr>
 	    {% if gameStarted %}
-	    <p>Target: {{target["name"]}}<img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
+	    <h4>Target's Picture:</h4> <img src="/static/uploads/{{target['pic']}}" height="140px" width="140px"></p>
         <form method="POST" enctype="multipart/form-data">
         <input type="file" name="f" class="btn btn-default" accept="image/*;capture=camera"><br>
 	    <input type="submit" name="b" class="btn btn-primary" value="Confirm">
