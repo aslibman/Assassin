@@ -58,7 +58,7 @@ def kairosapiRECOGNIZE(facepath):
     d=json.loads(response_body)
     try:
         if d['images'][0]['transaction']['status']=='failure':
-            return False
+            return []
         elif d['images'][0]['transaction']['status']=='success':
             d=d['images'][0]['candidates']
             l=[]
@@ -69,8 +69,8 @@ def kairosapiRECOGNIZE(facepath):
             return l 
             
     except:
-        return False
-
+        return []
+    
 def kairosapiREMOVESUBJECT(id):
     values= """
     {"gallery_name":"Assassin",

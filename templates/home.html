@@ -56,11 +56,17 @@
            <div class="jumbotron">
                <form role="form" class="form-horizontal" method="POST">
                    <h2>Your Game</h2>
-               {% if playerInGame %}
+                   {% if playerInGame %}
+                   {% if manualRequest %}
+                   Your assassin has submitted a manual confirmation request. Is this you?
+                   <p><img src="/static/uploads/{{user}}TARGET.jpg"> </p>
+                   <p><input type="submit" name="b" class="btn btn-primary" value="Yes">
+                       <input type="submit" name="b" class="btn btn-primary" value="No"></p>
+                   {% endif %}
                <p> Currently in {{game["name"]}}.</p>
                <p> Your Target: {{target["name"]}}</p>
                <p> Description: {{game["description"]}}</p>
-               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: This action cannot be reversed!</p>
+               <p><input type="submit" name="b" class="btn btn-danger" value="Leave Game"> WARNING: If you are host, the game will be deleted!</p>
 {% if canStartGame %}
 			   <p><input type="submit" name="b" class="btn btn-primary" value="Start"> <u><h2>Players: ({{gameSize}})</h2></u></p><br>
                {% for e in playerList %}

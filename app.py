@@ -37,31 +37,40 @@ def home():
     game = getGame(playerInfo["game"])
     canStartGame = isHost(ID) and countPlayers(game["num"]) > 1 and not game["started"]
     target = getTarget(ID)
+    manualRequest = playerInfo["request"] != 0
     
     if request.method == "POST":
         if request.form["b"] == "Log Out":
             logout()
             return redirect(url_for("login"))
-        if request.form["b"] == "Settings":
+        elif request.form["b"] == "Settings":
             return redirect(url_for("settings"))
-        if request.form["b"] == "Create":
+        elif request.form["b"] == "Create":
             description = request.form["entry"]
             match = createGame(ID, description)
             return redirect(url_for("home"))
-        if request.form["b"] == "Leave Game":
+        elif request.form["b"] == "Leave Game":
             leaveGame(ID)
             return redirect(url_for("home"))
-        if request.form["b"] == "Start":
+        elif request.form["b"] == "Start":
             assignTargets(playerInfo["game"])
-        leaveGame(int(request.form["b"]))
-        return redirect(url_for("home"))
+            return redirect(url_for("home"))
+        elif request.form["b"] == "Yes":
+            answerRequest(ID,True)
+            return redirect(url_for("home"))
+        elif request.form["b"] == "No":
+            answerRequest(ID,False)
+            return redirect(url_for("home"))
+        else:
+            leaveGame(int(request.form["b"]))
+            return redirect(url_for("home"))
        ## target = getTarget(ID)
     gameSize = 0
     playerList = []
     if canStartGame:
         gameSize = countPlayers(game["num"])
         playerList = getPlayers(game["num"])
-    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame,gameSize=gameSize,playerList=playerList)
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame,gameSize=gameSize,playerList=playerList, manualRequest=manualRequest)
 	
 
 @app.route("/",methods = ["POST","GET"])
@@ -160,6 +169,7 @@ def target():
     ID = player["num"]
     game = player["game"]
     gameStarted = False
+    manualConfirm = False
             
     lat = json.loads(json.dumps(request.args.get("latitude")))
     lng = json.loads(json.dumps(request.args.get("longitude")))
@@ -174,25 +184,25 @@ def target():
             return redirect(url_for("settings"))
         if request.form["b"] == "Confirm":
             #victor's stuff
+            targetUser = getTarget(ID)["user"]
             f = request.files["f"]
-            f = uploadFile(f,player["user"]+"TARGET")
+            f = uploadFile(f,targetUser+"TARGET")
             if f[0]:
                 path = "static/uploads/" + f[2]
                 processImg(path)
                 if kairosapiDETECT(path):
-                    targetUser = getTarget(ID)["user"]
                     if targetUser in kairosapiRECOGNIZE(path):
-                        #print "KILLED"
                         killTarget(ID)
                         return redirect(url_for("home"))
                     else:
-                        #print kairosapiRECOGNIZE(path)
-                        message="Face Recognition failed. Sending a notification to your target."
-                        #possible notification in case face recog fails
-                        #return False
+                        message="Face recognition did not match."
+                        manualConfirm=True
                 else:
-                    message= "No face in the photo detected. Try again."
-                    #return False
+                    message= "No face in the photo detected."
+                    manualConfirm=True
+        if request.form["b"] == "Manual Confirm":
+            sendManualRequest(ID)
+            message="A request for manual confirmation has been sent to your target."
                 
     if game != 0 and getGame(game)["started"]:
         gameStarted = True
@@ -200,7 +210,7 @@ def target():
         targetJSON = getTarget(ID);
         targetLat = targetJSON["loc"]["lat"];
         targetLng = targetJSON["loc"]["lng"];
-        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted, message=message)
+        return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted,message=message,manualConfirm=manualConfirm)
     
     return render_template("target.html",gameStarted=gameStarted)
 
