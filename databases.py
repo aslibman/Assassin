@@ -201,6 +201,13 @@ def assignTargets(gameID):
 def countPlayers(gameID):
     game = getGame(gameID)
     return len(game["players"])
+
+#used to get list of players other than host in a game
+def getPlayers(gameID):
+    game = getGame(gameID)
+    players = game["players"]
+    players.pop(str(game["host"]))
+    return [getInfoByID(int(i)) for i in players.keys()]
     
 if __name__ == "__main__":
     print "Clearing the users database"

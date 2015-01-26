@@ -53,11 +53,15 @@ def home():
             return redirect(url_for("home"))
         if request.form["b"] == "Start":
             assignTargets(playerInfo["game"])
+        leaveGame(int(request.form["b"]))
+        return redirect(url_for("home"))
        ## target = getTarget(ID)
     gameSize = 0
+    playerList = []
     if canStartGame:
         gameSize = countPlayers(game["num"])
-    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame,gameSize=gameSize)
+        playerList = getPlayers(game["num"])
+    return render_template("home.html",playerInGame=playerInGame, user=user, game=game, target=target, canStartGame=canStartGame,gameSize=gameSize,playerList=playerList)
 	
 
 @app.route("/",methods = ["POST","GET"])
