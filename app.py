@@ -158,7 +158,7 @@ def profile(username=None):
         game = getGame(result["game"])
         host = getInfoByID(game["host"])["user"]
         description = game["description"]
-    canJoinGame = getInfoByUser(session["username"])["game"] == 0
+    canJoinGame = playerInfo["game"] == 0 and not getGame(result["game"])["started"]
     return render_template("profile.html",result=result,inGame=inGame,host=host,description=description,canJoinGame=canJoinGame)
 
 @app.route('/target', methods=['GET', 'POST'])
