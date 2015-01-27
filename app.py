@@ -82,7 +82,8 @@ def login():
             return redirect(url_for("about"))
         if request.form["b"] == "Sign Up":
             return redirect(url_for("registration"))
-        
+        if request.form["b"] == "About":
+            return redirect(url_for("about"))
         user = request.form["username"]
         pword = request.form["password"]
         l = authenticate(user,pword)
@@ -105,6 +106,8 @@ def registration():
             return redirect(url_for("about"))
         if request.form["b"] == "Log In":
             return redirect(url_for("login"))
+        if request.form["b"] == "About":
+            return redirect(url_for("about"))
         
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
