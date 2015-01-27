@@ -214,7 +214,7 @@ def target():
         targetLng = targetJSON["loc"]["lng"];
         return render_template("target.html",targetLng=targetLng, targetLat=targetLat, target=target,gameStarted=gameStarted,message=message,manualConfirm=manualConfirm)
     
-    return render_template("target.html",gameStarted=gameStarted,message="hello")
+    return render_template("target.html",gameStarted=gameStarted,)
 
 @app.route('/search', methods=['GET', 'POST'])
 @loginRequired
