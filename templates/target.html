@@ -169,9 +169,9 @@
         <input type="file" name="f" class="btn btn-default" accept="image/*;capture=camera"><br>
 	    <input type="submit" name="b" class="btn btn-danger" value="Confirm">
 	    {% endif %}
-	    {{message}}
+	   <p class="text-danger"> {{message}} </p>
         {% if manualConfirm %}
-        <input type="submit" name="b" class="btn btn-primary" value="Manual Confirm">
+        <p><input type="submit" name="b" class="btn btn-primary" value="Manual Confirm"></p>
         {% endif %}
         </form>
 	  </div>
