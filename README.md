@@ -6,7 +6,7 @@ Gunicorn: http://104.236.123.216 <br>
 Demo Video: https://www.youtube.com/watch?v=w98Tqa_cDVY <br>
 
 ## What It Does
-<i>Placeholder</i>
+Assassin is a multiplayer "manhunt" game. Players register an account on the site, and can then either join a game off of another user or host their own game. After the game is started, players in the game will be randomly matched to a target, who is another player in the game. Their job is to try to "assassinate" their target by taking and uploading a clear image of the person, while trying to avoid being assassinated themselves. After a target is assassinated, the assassin inherits their target. The overall winner is the last man standing in the game. Images are automatically compared with the Kairos facial recognition API to allow for instant confirmation of a kill, but if that fails there is an option for manual confirmation by the target. A geolocation system is also in place to help lead assassins to the general location of their targets. 
 
 ## Installation
 1. Clone the repository: `git clone git@github.com:kingalex11235/Assassin.git`
