@@ -1,9 +1,8 @@
-from pymongo import Connection
+from pymongo import MongoClient
 import random, os, base64, string
 from faceapi import kairosapiDETECT, kairosapiENROLL
 #from PIL import Image
-conn = Connection()
-db = conn['game']
+db = MongoClient()['game']
 
 upload_folder = "static/uploads/"
 allowedExtensions = ['png', 'jpg']
